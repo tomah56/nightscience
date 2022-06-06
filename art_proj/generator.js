@@ -1,7 +1,4 @@
 
-
-
-
 let net;
 let video;
 paper.install(window);
@@ -22,6 +19,7 @@ let nosePoint, leftHandPoint, rightHandPoint
 
 window.onload = function() {
     
+    
 
     paper.setup('myCanvas')
     
@@ -38,101 +36,72 @@ window.onload = function() {
     nosePoint = new Path.Circle({
         fillColor: 'red',
         center: paper.view.center,
-        radius: 10
+        radius: 0
     })
     
     leftHandPoint = new Path.Circle({
         fillColor: 'blue',
         center: paper.view.center,
-        radius: 10
+        radius: 0
     })
     
     rightHandPoint = new Path.Circle({
         fillColor: 'green',
         center: paper.view.center,
-        radius: 5
+        radius: 0
     })
     
+	var rect = new Path.Rectangle({
+		point: [475, 575],
+		size: [75, 75],
+		strokeColor: 'white'
+	});
+
+
+	ccircle2 = Path.Circle(new Point( moveDotX, moveDoty), 10);
+	
+	let ccircle = Path.Circle(new Point( rghandmoveDotX, rghandmoveDoty), 10);
+	
     video.onloadeddata = function() {
-        setupNet();
+		setupNet();
         getPose();
-        
+		
         view.onFrame = function(event){
-        
-            //if you want to do something every frame, do it here :)
-            // let rect = Path.Rectangle(new Point(moveDotX, moveDoty), new Size(70, 50));
-            // rect.strokeColor = 'black';
-            // rect.strokeWidth = 2;
-            // rect.fillColor = 'blue';
+			
+			// onFrame(event);
             
-            let ccircle2 = Path.Circle(new Point( moveDotX, moveDoty), 10);
-            ccircle2.fillColor = Color.random();
+            
+            // function onFrame(event) {
+				//     // Each frame, rotate the path by 3 degrees:
+				//     // if (!(event.count % 6))
+				//       path.rotate(45);
+				// 	}
+				//if you want to do something every frame, do it here :)
+				// let rect = Path.Rectangle(new Point(moveDotX, moveDoty), new Size(70, 50));
+				// rect.strokeColor = 'black';
+				// rect.strokeWidth = 2;
+				// rect.fillColor = 'blue';
+				// if (!(event.count % 6))
+				// project.activeLayer.removeChildren(); 
+				
+				rect.rotate(3);
+				
+				
+				ccircle2.position = new Point(moveDotX, moveDoty);
+				ccircle.position = new Point(rghandmoveDotX, rghandmoveDoty);
+				
+				ccircle2.fillColor = Color.random();
+				ccircle.fillColor = Color.random();
+				
+				// count++;
+				// if (nosePoint)
+				// 	console.log(nosePoint._position.x);
+				getPose();
+				
 
-            let ccircle = Path.Circle(new Point( rghandmoveDotX, rghandmoveDoty), 10);
-            ccircle.fillColor = Color.random();
-
-			// count++;
-			// if (nosePoint)
-			// 	console.log(nosePoint._position.x);
-            getPose()
-			if (nosePoint != undefined && nosePoint._position != undefined)
-			{
-                if ((posPrevx - nosePoint._position.x + 10) < 0)
-                {
-                    // console.log("left\n");
-                    moveDotX -= 30;
-                    posPrevx = nosePoint._position.x;
-                }
-                else if ((nosePoint._position.x - posPrevx + 10) < 0)
-                {
-                    // console.log("right\n");
-                    moveDotX += 30;
-                    posPrevx = nosePoint._position.x;
-                }
-                if ((posPrevy - nosePoint._position.y + 5) < 0)
-                {
-                    // console.log("down\n");
-                    moveDoty += 30;
-                    posPrevy = nosePoint._position.y;
-                }
-                else if ((nosePoint._position.y - posPrevy + 5) < 0)
-                {
-                    // console.log("up\n");
-                    moveDoty -= 30;
-                    posPrevy = nosePoint._position.y;
-                }
-                // count = 0;
-			}
-
-            // circle
-			if (rightHandPoint != undefined && rightHandPoint._position != undefined)
-			{
-                if ((rghandposPrevx - rightHandPoint._position.x + 10) < 0)
-                {
-                    // console.log("left\n");
-                    rghandmoveDotX -= 30;
-                    rghandposPrevx = rightHandPoint._position.x;
-                }
-                else if ((rightHandPoint._position.x - rghandposPrevx + 10) < 0)
-                {
-                    // console.log("right\n");
-                    rghandmoveDotX += 30;
-                    rghandposPrevx = rightHandPoint._position.x;
-                }
-                if ((rghandposPrevy - rightHandPoint._position.y + 5) < 0)
-                {
-                    // console.log("down\n");
-                    rghandmoveDoty += 30;
-                    rghandposPrevy = rightHandPoint._position.y;
-                }
-                else if ((rightHandPoint._position.y - rghandposPrevy + 5) < 0)
-                {
-                    // console.log("up\n");
-                    rghandmoveDoty -= 30;
-                    rghandposPrevy = rightHandPoint._position.y;
-                }
-                // count = 0;
-			}
+			movementsOneCircleSec();
+			movementsOneCircle();
+			
         }
        
     }
@@ -142,6 +111,70 @@ window.onload = function() {
 
 }
 
+
+
+async function movementsOneCircle(){
+
+	if (rightHandPoint != undefined && rightHandPoint._position != undefined)
+	{
+		if ((rghandposPrevx - rightHandPoint._position.x + 10) < 0)
+		{
+			// console.log("left\n");
+			rghandmoveDotX -= 30;
+			rghandposPrevx = rightHandPoint._position.x;
+		}
+		else if ((rightHandPoint._position.x - rghandposPrevx + 10) < 0)
+		{
+			// console.log("right\n");
+			rghandmoveDotX += 30;
+			rghandposPrevx = rightHandPoint._position.x;
+		}
+		if ((rghandposPrevy - rightHandPoint._position.y + 5) < 0)
+		{
+			// console.log("down\n");
+			rghandmoveDoty += 30;
+			rghandposPrevy = rightHandPoint._position.y;
+		}
+		else if ((rightHandPoint._position.y - rghandposPrevy + 5) < 0)
+		{
+			// console.log("up\n");
+			rghandmoveDoty -= 30;
+			rghandposPrevy = rightHandPoint._position.y;
+		}
+		// count = 0;
+	}
+}
+async function movementsOneCircleSec()
+{
+
+	if (nosePoint != undefined && nosePoint._position != undefined)
+	{
+		if ((posPrevx - nosePoint._position.x + 10) < 0)
+		{
+			// console.log("left\n");
+			moveDotX -= 30;
+			posPrevx = nosePoint._position.x;
+		}
+		else if ((nosePoint._position.x - posPrevx + 10) < 0)
+		{
+			// console.log("right\n");
+			moveDotX += 30;
+			posPrevx = nosePoint._position.x;
+		}
+		if ((posPrevy - nosePoint._position.y + 5) < 0)
+		{
+			// console.log("down\n");
+			moveDoty += 30;
+			posPrevy = nosePoint._position.y;
+		}
+		else if ((nosePoint._position.y - posPrevy + 5) < 0)
+		{
+			// console.log("up\n");
+			moveDoty -= 30;
+			posPrevy = nosePoint._position.y;
+		}
+	}
+}
 
 
 async function setupNet(){
