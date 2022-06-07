@@ -8,13 +8,21 @@ let posPrevy = 0;
 let moveDotX = 480;
 let moveDoty = 680;
 
+let planetStartY = 450
+let planetStartX = 750
+let planetX = planetStartX;
+let planetY = planetStartY;
+
 
 let rghandposPrevx = 0;
 let rghandposPrevy = 0;
 let rghandmoveDotX = 880;
 let rghandmoveDoty = 680;
+let angle = 0.1;
 
-let nosePoint, leftHandPoint, rightHandPoint
+let nosePoint, leftHandPoint, rightHandPoint;
+
+let planetOne;
 
 
 window.onload = function() {
@@ -50,6 +58,12 @@ window.onload = function() {
         center: paper.view.center,
         radius: 0
     })
+
+	planetOne = new Path.Circle({
+		position: new Point( planetStartX,  planetStartY),
+        fillColor: 'brown',
+        radius: 50
+    })
     
 	var rect = new Path.Rectangle({
 		point: [475, 575],
@@ -57,7 +71,7 @@ window.onload = function() {
 		strokeColor: 'white'
 	});
 
-
+	
 	ccircle2 = Path.Circle(new Point( moveDotX, moveDoty), 10);
 	
 	let ccircle = Path.Circle(new Point( rghandmoveDotX, rghandmoveDoty), 10);
@@ -86,6 +100,19 @@ window.onload = function() {
 				
 				rect.rotate(3);
 				
+				// xn = r * cos(a) and yn = r * sin(a)
+				if (!(event.count % 3))
+				{
+					movePlanet();
+					// angle += 0.01;
+					// if (angle > 2 * Math.PI)
+					// 	angle -= 2 * Math.PI;
+					// planetX = planetStartX + 300 * Math.cos(angle);
+					// planetY = planetStartY + 300 * Math.sin(angle);
+					// planetOne.position = new Point( planetX, planetY);
+				}
+					
+				
 				
 				ccircle2.position = new Point(moveDotX, moveDoty);
 				ccircle.position = new Point(rghandmoveDotX, rghandmoveDoty);
@@ -113,68 +140,7 @@ window.onload = function() {
 
 
 
-async function movementsOneCircle(){
 
-	if (rightHandPoint != undefined && rightHandPoint._position != undefined)
-	{
-		if ((rghandposPrevx - rightHandPoint._position.x + 10) < 0)
-		{
-			// console.log("left\n");
-			rghandmoveDotX -= 30;
-			rghandposPrevx = rightHandPoint._position.x;
-		}
-		else if ((rightHandPoint._position.x - rghandposPrevx + 10) < 0)
-		{
-			// console.log("right\n");
-			rghandmoveDotX += 30;
-			rghandposPrevx = rightHandPoint._position.x;
-		}
-		if ((rghandposPrevy - rightHandPoint._position.y + 5) < 0)
-		{
-			// console.log("down\n");
-			rghandmoveDoty += 30;
-			rghandposPrevy = rightHandPoint._position.y;
-		}
-		else if ((rightHandPoint._position.y - rghandposPrevy + 5) < 0)
-		{
-			// console.log("up\n");
-			rghandmoveDoty -= 30;
-			rghandposPrevy = rightHandPoint._position.y;
-		}
-		// count = 0;
-	}
-}
-async function movementsOneCircleSec()
-{
-
-	if (nosePoint != undefined && nosePoint._position != undefined)
-	{
-		if ((posPrevx - nosePoint._position.x + 10) < 0)
-		{
-			// console.log("left\n");
-			moveDotX -= 30;
-			posPrevx = nosePoint._position.x;
-		}
-		else if ((nosePoint._position.x - posPrevx + 10) < 0)
-		{
-			// console.log("right\n");
-			moveDotX += 30;
-			posPrevx = nosePoint._position.x;
-		}
-		if ((posPrevy - nosePoint._position.y + 5) < 0)
-		{
-			// console.log("down\n");
-			moveDoty += 30;
-			posPrevy = nosePoint._position.y;
-		}
-		else if ((nosePoint._position.y - posPrevy + 5) < 0)
-		{
-			// console.log("up\n");
-			moveDoty -= 30;
-			posPrevy = nosePoint._position.y;
-		}
-	}
-}
 
 
 async function setupNet(){
