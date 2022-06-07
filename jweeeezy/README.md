@@ -16,10 +16,7 @@ __SCENERY__
 __INTERACTION__
 
 __Right Hand
-//	Spaceship flying
-	or
-//	Astronaut walking
-
+//	Spaceship flying or Astronaut walking
 //	paintbrush tail following Spaceship/Astronaut
 
 __Left Hand
