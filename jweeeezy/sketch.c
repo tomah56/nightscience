@@ -6,27 +6,13 @@
 /*   By: jwillert <jwillert@student.42heilbronn.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 09:22:28 by jwillert          #+#    #+#             */
-/*   Updated: 2022/06/06 13:12:07 by jwillert         ###   ########.fr       */
+/*   Updated: 2022/06/07 09:55:19 by jwillert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-BACKGROUND
 
-TRACKING-EVENTS
-
-OUTPUT
-
-THINGS2WATCH
-//	paintbrush technique (youtube)
-//	chain technique (paper js)
-//	starry eyed (youtube)
-
-THINGS2RESEARCH
-//	how to center the tracking points
-//	where do we put the webcam stream
-
-
-STARRYEYED
+__BACKGROUND__
+YouTube Tutorial: Starry Eyed Night Scene -- Code
 
 // array of stars
 var stars = []
@@ -96,3 +82,7 @@ function onFrame(event)
         }
     }
 }
+
+
+__TRACKING__
+
