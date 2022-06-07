@@ -1,5 +1,5 @@
 
-canvas[resize] {
+canvas[tracking] {
 	position: absolute;
 	top:   25%;
 	left:  25%;
@@ -10,18 +10,16 @@ canvas[resize] {
 	background: transparent;
 }
 
-.myCan {
+canvas[scenery] {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-
     z-index:0;
 	background: black;
-
 }
 
 video {
-    position:absolute;
+    position: absolute;
     top:60%;
     left:75%;
     z-index:1;
