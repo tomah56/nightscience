@@ -33,9 +33,6 @@ var angle = 0.1;
 
 var planetOne;
 
-
-
-
 //									FUNCTIONS
 //				STARS FUNCTIONS
 

@@ -1,11 +1,9 @@
 
-
-
 //									INITIALISATION
 paper.install(window);
 
 //				STARS
-var stars = [];
+var starsArray = [];
 
 //  Number of stars
 var starCount = 200;
@@ -50,9 +48,9 @@ let nosePoint, leftHandPoint, rightHandPoint
 //	FUNCTION - generate stars
 function starsGenerate(){
 	for(var i = 0; i <= starCount; i++){
-	var circle = new Path.Circle(new Point(paper.view.size.width, paper.view.size.height) * Point.random(), randomInt(0.5, 2));
-	stars.push(circle);
-    circle.fillColor = color3;
+	var starSingle = new Path.Circle(new Point(paper.view.size.width, paper.view.size.height) * Point.random(), randomInt(0.5, 2));
+	starsArray.push(starSingle);
+    starSingle.fillColor = color3;
 	}
 }
 
@@ -61,23 +59,23 @@ function starsColorRandomize(){
 	for(var i = 0; i <= starCount; i++){
 		var chance = Math.random();
 		if (chance <= 0.7){
-			stars[i].fillColor = color1;
+			starsArray[i].fillColor = color1;
 		}
 		if (chance <= 0.3){
-			stars[i].fillColor = color2;
+			starsArray[i].fillColor = color2;
 		}
 	}
 }
 
 //	FUNCTION - Translation/Animation
 function starsTranslate(){
-	for(var i = 0; i < stars.length; i++){
-		stars[i].translate(stars[i].rate, 0);
-		if(stars[i].position.x > paper.view.size.width){
-			stars[i].position.x = 0;
+	for(var i = 0; i < starsArray.length; i++){
+		starsArray[i].translate(starsArray[i].rate, 0);
+		if(starsArray[i].position.x > paper.view.size.width){
+			starsArray[i].position.x = 0;
 		}
-		else if(stars[i].position.x < 0){
-			stars[i].position.x = paper.view.size.width
+		else if(starsArray[i].position.x < 0){
+			starsArray[i].position.x = paper.view.size.width
 		}
 	}
 }
@@ -89,9 +87,9 @@ function randomInt(min, max){
 
 //	FUNCTION - Assign and randomize movement Speed
 function starsAssignRate(){
-    for (var i = 0; i < stars.length; i++ ){
+    for (var i = 0; i < starsArray.length; i++ ){
         var assignedRate = Math.random() * velocity;
-        stars[i].rate = assignedRate;
+        starsArray[i].rate = assignedRate;
     }
 }
 
