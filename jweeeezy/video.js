@@ -14,7 +14,7 @@ var velocity = 2;
 //  Colors
 var color1 = "red";         //  60%
 var color2 = "orange";      //  30%
-var color3 = "yellow";      //  else
+var color3 = 'yellow';      //  else
 
 //				PLANET
 
@@ -48,9 +48,12 @@ let nosePoint, leftHandPoint, rightHandPoint
 //	FUNCTION - generate stars
 function starsGenerate(){
 	for(var i = 0; i <= starCount; i++){
-	var starSingle = new Path.Circle(new Point(paper.view.size.width, paper.view.size.height) * Point.random(), randomInt(0.5, 2));
-	starsArray.push(starSingle);
-    starSingle.fillColor = color3;
+		console.log("hi");
+		var starSingle = new Path.Circle({
+			center: new Point(randomInt(0, 400), randomInt(0, 300)),
+			radius: randomInt(0.5, 3)});
+    	starSingle.fillColor = color3;
+		starsArray.push(starSingle);
 	}
 }
 
@@ -190,7 +193,7 @@ window.onload = function() {
 
 	planetCreate();
 	starsGenerate();
-	starsColorRandomize();
+	//starsColorRandomize();
 // run function once in order to have a dynamic image from beginning
 	starsAssignRate();
 
@@ -199,9 +202,10 @@ window.onload = function() {
         getPose();
 
         view.onFrame = function(event){
-            starsTranslate();
 			getPose();
+            //starsTranslate();
 			planetMove();
+			paper.view.update();
         }
     }
 }
