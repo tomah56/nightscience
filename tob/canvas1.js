@@ -4,25 +4,58 @@ let blue42 = '#00babc';
 let pink42 = '#d101bf';
 let yellow42 = '#f1ca37';
 
-var stars = [];
+var galaxyStars = [];
+
 window.onload = function() {
 
 	paper.setup('can1');
 
-	var myPath1 = new Path();
-	var myPath2 = new Path();
-	var count;
-
 	var position = new Point(paper.view.center);
 	
+	drawGalaxy(position)
 
-	drawSpiral(myPath1, position, 0, 1, 1.2);
-	drawSpiral(myPath2, position, 1, 1, 1.2);
-	randCircle(position);
+	var count = 0;
+	var dir = new Point(1, 0);
+	var rot = 0.2;
+
 	view.onFrame = function(event){
+		galaxyRotate(rot, position);
+	// 	galaxyTranslate(dir);
+	// count++;
+	// 	if (count > 250){
+	// 		dir.x *= -1;
+	// 		dir.y *= -1;
+	// 		count = 0;
+	// 		rot *= -1;
+	// 	}
 		view.update();
 	}
 	
+}
+
+function galaxyRotate(deg, pos) {
+	var rad = deg / 180 * Math.PI;
+	var cosa = Math.cos(rad);
+	var sina = Math.sin(rad);
+	for (var i = 0; i < galaxyStars.length; i++) {
+		var x = galaxyStars[i].position.x - pos.x;
+		var y = galaxyStars[i].position.y - pos.y;
+
+		// var dis = Math.sqrt(x * x + y * y);
+		// cosa = Math.cos((rad / dis) * 200);
+		// sina = Math.sin((rad / dis) * 200);
+		
+		galaxyStars[i].position.x = cosa * x - sina * y + pos.x;
+		galaxyStars[i].position.y = sina * x + cosa * y + pos.y;
+	}
+
+}
+
+function galaxyTranslate(vec) {
+	for (var i = 0; i < galaxyStars.length; i++) {
+		galaxyStars[i].position.x += vec.x;
+		galaxyStars[i].position.y += vec.y;
+	}
 }
 
 
@@ -30,11 +63,13 @@ function randomInt(min, max){
 	return Math.floor(Math.random()*(max-min+1)+min)
 }
 
+function drawGalaxy(center) {
+	drawSpiral(center, 0, 1, 1.5);
+	drawSpiral(center, 1, 1, 1.5);
+}
 
+function drawSpiral(position, offset, width, height) {
 
-function drawSpiral(myPath, position, offset, width, height) {
-
-	myPath.strokeColor = 'white';
 	for (var i = 0; i < 108; i++) {
 		var np = new Point();
 		var rad = (i + Math.random() / 0.5) * Math.PI / 24 + offset * Math.PI;
@@ -61,5 +96,5 @@ function randCircle(position){
 		circle.fillColor = yellow42;
 	else if (chance == 3)
 		circle.fillColor = pink42;
-	stars.push(circle);
+	galaxyStars.push(circle);
 }
