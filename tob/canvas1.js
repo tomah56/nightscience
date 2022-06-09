@@ -30,6 +30,8 @@ function randomInt(min, max){
 	return Math.floor(Math.random()*(max-min+1)+min)
 }
 
+
+
 function drawSpiral(myPath, position, offset, width, height) {
 
 	myPath.strokeColor = 'white';
