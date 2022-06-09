@@ -16,7 +16,9 @@ NEXT STEPS
 
 	CODING
 	//	How to combine our code?
+	--> http://paperjs.org/tutorials/getting-started/working-with-paper-js/
 	-->	http://paperjs.org/tutorials/getting-started/using-javascript-directly/
+	--> http://paperjs.org/tutorials/getting-started/paperscript-interoperability/
 
 	//	Connect Movement of Stars (Animation) with Body Tracking
 	//	Create Planets (Orbital Movement)
