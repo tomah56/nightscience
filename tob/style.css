@@ -1,0 +1,44 @@
+/* canvas[resize] {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    background-color: rgb(187, 176, 176);
+}
+
+video {
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:2;
+} */
+
+canvas[can1] {
+	position: absolute;
+	top:0;
+	left:0;
+	z-index: 0;
+
+	width: 100%;
+	height: 100%;
+	background-color: black;
+}
+
+/* canvas[can2] {
+	position: absolute;
+	top:0;
+	right:0;
+	z-index: 1;
+
+	width: 50%;
+	height: 50%;
+	background-color: rgb(241, 8, 187)
+} */
+
+body, html {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
