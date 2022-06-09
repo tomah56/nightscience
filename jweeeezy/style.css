@@ -1,32 +1,15 @@
-
-canvas[tracking] {
-	position: absolute;
-	top:   25%;
-	left:  25%;
-	width: 100%;
-	height: 100%;
-
-    z-index:1;
-	background: transparent;
-}
-
-canvas[scenery] {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-    z-index:0;
-	background: black;
-}
-
-video {
+.background {
     position: absolute;
-    top:60%;
-    left:75%;
-    z-index:1;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background-color: black;
 }
 
-body, html {
-	height: 100%;
-	margin: 0;
-	padding: 0;
+.universe {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: transparent;
 }

@@ -35,7 +35,7 @@ for(var i = 0; i <= 2000; i++){
 for(var i = 0; i <= 2000; i++){
     var chance = Math.random();
     if (chance <= 0.7){
-        stars[i].fillColor = 'yellow';
+        stars[i].fillColor = "yellow";
     }
     if (chance <= 0.3){
         stars[i].fillColor = 'blue';
