@@ -12,6 +12,8 @@ let planetStartY = 450
 let planetStartX = 750
 let planetX = planetStartX;
 let planetY = planetStartY;
+let planetX2 = planetStartX;
+let planetY2 = planetStartY;
 
 
 let rghandposPrevx = 0;
@@ -19,10 +21,12 @@ let rghandposPrevy = 0;
 let rghandmoveDotX = 880;
 let rghandmoveDoty = 680;
 let angle = 0.1;
+let movingpart = 2.0;
 
 let nosePoint, leftHandPoint, rightHandPoint;
 
 let planetOne;
+let planetTwo;
 
 
 window.onload = function() {
@@ -45,31 +49,39 @@ window.onload = function() {
         fillColor: 'red',
         center: paper.view.center,
         radius: 0
-    })
+    });
     
     leftHandPoint = new Path.Circle({
         fillColor: 'blue',
         center: paper.view.center,
         radius: 0
-    })
+    });
     
     rightHandPoint = new Path.Circle({
         fillColor: 'green',
         center: paper.view.center,
         radius: 0
-    })
+    });
 
-	planetOne = new Path.Circle({
-		position: new Point( planetStartX,  planetStartY),
-        fillColor: 'brown',
-        radius: 50
-    })
+	planetOne = new Path.Circle(new Point( planetStartX,  planetStartY), 80);
+    planetOne.fillColor = 'brown';
+
+	// planetTwo = new Path.Circle(new Point( planetStartX,  planetStartY), 80);
+    // planetTwo.fillColor = 'blue';
+
+
+	// planetOne = new Path.Circle({
+	// 	position: new Point( planetStartX,  planetStartY),
+    //     fillColor: 'brown',
+    //     radius: 30
+    // })
     
-	var rect = new Path.Rectangle({
-		point: [475, 575],
-		size: [75, 75],
-		strokeColor: 'white'
-	});
+    //rotating rectangel
+	// var rect = new Path.Rectangle({
+	// 	point: [475, 575],
+	// 	size: [75, 75],
+	// 	strokeColor: 'white'
+	// });
 
 	
 	ccircle2 = Path.Circle(new Point( moveDotX, moveDoty), 10);
@@ -98,7 +110,7 @@ window.onload = function() {
 				// if (!(event.count % 6))
 				// project.activeLayer.removeChildren(); 
 				
-				rect.rotate(3);
+				// rect.rotate(3); // rotating rectangle
 				
 				// xn = r * cos(a) and yn = r * sin(a)
 				if (!(event.count % 3))
@@ -128,19 +140,10 @@ window.onload = function() {
 
 			movementsOneCircleSec();
 			movementsOneCircle();
-			
         }
-       
     }
-    
-   
-
 
 }
-
-
-
-
 
 
 async function setupNet(){

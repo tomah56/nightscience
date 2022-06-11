@@ -1,11 +1,55 @@
 function movePlanet()
 {
-	angle += 0.01;
+	let pbigA = 200;
+	let pbigB = 150;
+
+	let radius = 50;
+
+
+	angle += 0.05;
 	if (angle > 2 * Math.PI)
 		angle -= 2 * Math.PI;
-	planetX = planetStartX + 300 * Math.cos(angle);
-	planetY = planetStartY + 300 * Math.sin(angle);
-	planetOne.position = new Point( planetX, planetY);
+	// elliptic movment
+
+		planetX = planetStartX + 300 * Math.cos(angle);
+		planetY = planetStartY + 80 * Math.sin(angle);
+	
+	planetX2 = planetX;
+	planetY2 = planetY;
+	// circle movments
+	// planetX = planetStartX + 300 * Math.cos(angle);
+	// planetY = planetStartY + 300 * Math.sin(angle);
+
+	
+	// if (angle <= (Math.PI / 2 ) + 0.1 && angle >= (Math.PI / 2) - 0.1)
+	// 	movingpart = 1.0;
+	if (angle < Math.PI / 2 || angle > (3 * Math.PI) / 2) // up part
+	{
+		movingpart *= 1.01;
+		// console.log("first ");
+		// console.log(angle);
+	}
+	else if (angle > Math.PI / 2 && angle < (3 * Math.PI) / 2)
+	{
+		// console.log("second ");
+		movingpart /= 1.01;
+
+	}
+
+	// planetOne.remove();
+	// planetTwo.remove();
+	// radius = 80;
+	// console.log(movingpart);
+	radius = 80 * Math.log(movingpart);
+	// movingpart = (duration * 3) / Math.pow(range, 3)) * Math.pow(movingpart, 2)
+
+	// sqrt(1 - pow(x - 1, 2))
+	// planetY = planetY + planetY / radius; 
+
+	planetOne = new Path.Circle( new Point( planetX, planetY), radius);
+    planetOne.fillColor = 'brown';
+	// planetTwo = new Path.Circle( new Point( planetX2 + 20, planetY2 + 20), radius);
+    // planetTwo.fillColor = 'blue';
 }
 
 async function movementsOneCircle(){
