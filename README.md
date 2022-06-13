@@ -4,7 +4,7 @@ PROGRESS SO FAR
 
 	//	Background Canvas (black)
 	//	Motion Tracking of Wrists + Head
-	//	Video Canvas with Stars (moving on Keypress), Galaxies (moving) and Planet (movement not working)
+	//	Video Canvas with Stars (moving on Keypress), Galaxies (random rotation) and Planet (orbital movement)
 	//	Merged Code into dir/jweeeezy
 
 NEXT STEPS
@@ -20,6 +20,5 @@ NEXT STEPS
 	//	Testing for Camera FOV + Distance
 
 	Coding
-	//	Orbital Movements of Planets / Random Movements of Galaxies
 	//	Maybe implement a Spaceship or Astronaut?
-	//	What changes to variables/properties does Hand + Head Movement do?
+	//	What changes to variables/properties will Hand + Head Movement do?
