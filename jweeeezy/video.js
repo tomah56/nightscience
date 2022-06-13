@@ -10,34 +10,29 @@ let blue42 = '#00babc';
 let pink42 = '#d101bf';
 let yellow42 = '#f1ca37';
 
-//																			Variables - Stars
+//																					Variables - Stars
 
 var starsArray = [];
 var starsCount = 200;
 var starsVelocity = 0;
-
-// if only one color we should delete starsColorRandomize function
-var starsColor1 = 'white';
-var starsColor2 = 'white';
-var starsColor3 = 'white';
+var starsColor = 'white';
 
 var starsKeyDownCounter = 0;
 
-//																			Variables - Planet
+//																					Variables - Planet
 
 //	initialised in planetCreate
 var planetOne;
+var planetOrbit;
 
-var planetStartY = 450
-var planetStartX = 750
-var planetX = planetStartX;
-var planetY = planetStartY;
-var planetAngle = 0.1;
+//	initialised onFrame
+var planetMoveTime;
 
-var planetRadius = 150;
+var planetRadius = 100;
 var planetColor = pink42;
+var planetVelocity = 750;
 
-//																			Variables - Galaxy
+//																					Variables - Galaxy
 
 var galaxyArray1 = [];
 var galaxyArray2 = [];
@@ -50,7 +45,7 @@ var galaxyRotationFactor = 0.2;
 var galaxyPosition1;
 var galaxyPosition2;
 
-//																	Variables - Motion Tracking
+//																			Variables - Motion Tracking
 
 let net;
 let video;
@@ -66,27 +61,15 @@ function randomInt(min, max){
     return Math.floor(Math.random() * (max - min + 0.1) + min);
 }
 
-//																			Functions - Stars
+//																					Functions - Stars
 
 function starsGenerate(){
 	for(var i = 0; i <= starsCount; i++){
 		var starSingle = new Path.Circle({
 			center: new Point(randomCoordinate(0, viewSizeWidth), randomCoordinate(0, viewSizeHeight)),
 			radius: randomInt(0.1, 4)});
-    	starSingle.fillColor = starsColor3;
+    	starSingle.fillColor = starsColor;
 		starsArray.push(starSingle);
-	}
-}
-
-function starsColorRandomize(){
-	for(var i = 0; i <= starsCount; i++){
-		var starsColorChance = Math.random();
-		if (starsColorChance <= 0.3){
-			starsArray[i].fillColor = starsColor1;
-		}
-		if (starsColorChance <= 0.1){
-			starsArray[i].fillColor = starsColor2;
-		}
 	}
 }
 
@@ -121,26 +104,32 @@ function starsChangeDirectionOnKeyDown(){
 	}
 }
 
-//																			Functions - Planet
+//																					Functions - Planet
 
 function planetCreate(){
 	planetOne = new Path.Circle({
-    position: new Point(planetStartX, planetStartY),
+    position: new Point (800, 1000),
     fillColor: planetColor,
-    radius: planetRadius
+    radius: planetRadius,
+	applyMatrix: false
 	})
+	planetOrbit = new Path.Ellipse({
+		position: paper.view.center,
+		size: [800, 350],
+		rotation: 5
+	});
 }
 
-function planetMove(){
-    planetAngle *= 0.01;
-    if (planetAngle > 2 * Math.PI)
-       planetAngle -= 2 * Math.PI;
-    planetX = planetStartX + 300 * Math.cos(planetAngle);
-    planetY = planetStartY + 300 * Math.sin(planetAngle);
-    planetOne.position = new Point( planetX, planetY);
+function planetMove(event){
+	planetMoveTime = event.count % planetVelocity / planetVelocity;
+	var offset = planetMoveTime * planetOrbit.length;
+	var point = planetOrbit.getPointAt(offset);
+	var tangent = planetOrbit.getTangentAt(offset);
+	planetOne.position = point;
+	planetOne.rotation = tangent.angle;
 }
 
-//																			Functions - Galaxy
+//																					Functions - Galaxy
 
 //	FUNCTION - places a circle of random size and color near position
 function galaxyRandomizeCircle(position, galaxyStars){
@@ -209,7 +198,7 @@ function galaxyTranslate(vec, galaxyStars){
 	}
 }
 
-//																	Functions - Motion Tracking
+//																			Functions - Motion Tracking
 
 async function setupNet(){
 
@@ -277,11 +266,10 @@ window.onload = function() {
 
 //	Stars Setup
 	starsGenerate();
-	starsColorRandomize();
 
 //	Galaxy Setup
-	galaxyPosition1 = new Point(randomCoordinate(0, viewSizeWidth), randomCoordinate(0, viewSizeHeight));
-	galaxyPosition2 = new Point(randomCoordinate(0, viewSizeWidth), randomCoordinate(0, viewSizeHeight));
+	galaxyPosition1 = new Point(randomCoordinate(200, viewSizeWidth), randomCoordinate(200, viewSizeHeight));
+	galaxyPosition2 = new Point(randomCoordinate(200, viewSizeWidth), randomCoordinate(200, viewSizeHeight));
 	galaxyDraw(galaxyPosition1, galaxyArray1);
 	galaxyDraw(galaxyPosition2, galaxyArray2);
 
@@ -292,25 +280,22 @@ window.onload = function() {
         setupNet();
         getPose();
 
-//																		Event - On Key Press
+//																					Event - On Key Press
 
 		view.onKeyDown = function(event){
 			starsChangeDirectionOnKeyDown();
 		}
 
-//																		Event - each Frame
+//																					Event - each Frame
 
 		view.onFrame = function(event){
 			getPose();
-			planetMove();
 			starsTranslate();
-
-			galaxyTranslate(galaxyDirection, galaxyArray1);
-			galaxyTranslate(galaxyDirection, galaxyArray2);
-			galaxyRotate(galaxyRotationFactor, galaxyPosition1, galaxyArray1);
-			galaxyRotate(galaxyRotationFactor, galaxyPosition2, galaxyArray2);
+			planetMove(event);
+			galaxyRotate(galaxyRotationFactor * 3, galaxyPosition1, galaxyArray1);
+			galaxyRotate(galaxyRotationFactor * 2, galaxyPosition2, galaxyArray2);
 			galaxyRotateCounter++;
-				if (galaxyRotateCounter > 250){
+				if (galaxyRotateCounter > 750){
 						galaxyDirection.x *= -1;
 						galaxyDirection.y *= -1;
 						galaxyRotateCounter = 0;
