@@ -292,10 +292,10 @@ window.onload = function() {
 			getPose();
 			starsTranslate();
 			planetMove(event);
-			galaxyRotate(galaxyRotationFactor * 3, galaxyPosition1, galaxyArray1);
-			galaxyRotate(galaxyRotationFactor * 2, galaxyPosition2, galaxyArray2);
+			galaxyRotate(galaxyRotationFactor * 0.5, galaxyPosition1, galaxyArray1);
+			galaxyRotate(galaxyRotationFactor * -0.3, galaxyPosition2, galaxyArray2);
 			galaxyRotateCounter++;
-				if (galaxyRotateCounter > 750){
+				if (galaxyRotateCounter > 1500){
 						galaxyDirection.x *= -1;
 						galaxyDirection.y *= -1;
 						galaxyRotateCounter = 0;
