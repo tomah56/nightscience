@@ -3,7 +3,7 @@ function movePlanet()
 	let pbigA = 200;
 	let pbigB = 150;
 
-	let radius = 50;
+	let radius = 80;
 
 
 	angle += 0.05;
@@ -20,27 +20,38 @@ function movePlanet()
 	// planetX = planetStartX + 300 * Math.cos(angle);
 	// planetY = planetStartY + 300 * Math.sin(angle);
 
-	
+	let trythis = Math.sqrt( 1 - Math.pow( (angle / (2 * Math.PI)) - 1, 2))
+	// console.log(angle, " second ",trythis);
+
 	// if (angle <= (Math.PI / 2 ) + 0.1 && angle >= (Math.PI / 2) - 0.1)
 	// 	movingpart = 1.0;
 	if (angle < Math.PI / 2 || angle > (3 * Math.PI) / 2) // up part
 	{
-		movingpart *= 1.01;
+		movingpart += trythis;
+
 		// console.log("first ");
 		// console.log(angle);
 	}
 	else if (angle > Math.PI / 2 && angle < (3 * Math.PI) / 2)
 	{
 		// console.log("second ");
-		movingpart /= 1.01;
+		movingpart -= trythis;
+		if (movingpart < 0)
+			movingpart *=-1;
 
 	}
 
-	// planetOne.remove();
+	planetOne.remove();
 	// planetTwo.remove();
 	// radius = 80;
 	// console.log(movingpart);
-	radius = 80 * Math.log(movingpart);
+	// console.log(movingpart);
+	// radius *= movingpart;
+	// let bob = 0.5 + Math.sqrt( 1 - Math.pow( movingpart - 1, 2));
+	// console.log(bob);
+	// radius *= bob;
+	// radius *= (trythis + 0.5);
+	radius *= movingpart;
 	// movingpart = (duration * 3) / Math.pow(range, 3)) * Math.pow(movingpart, 2)
 
 	// sqrt(1 - pow(x - 1, 2))

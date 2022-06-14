@@ -20,8 +20,8 @@ let rghandposPrevx = 0;
 let rghandposPrevy = 0;
 let rghandmoveDotX = 880;
 let rghandmoveDoty = 680;
-let angle = 0.1;
-let movingpart = 2.0;
+let angle = (3 * Math.PI) / 2;
+let movingpart = 0;
 
 let nosePoint, leftHandPoint, rightHandPoint;
 
