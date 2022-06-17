@@ -11,8 +11,8 @@ function movePlanet()
 		angle -= 2 * Math.PI;
 	// elliptic movment
 
-		planetX = planetStartX + 300 * Math.cos(angle);
-		planetY = planetStartY + 80 * Math.sin(angle);
+		planetX = planetStartX + 500 * Math.cos(angle);
+		planetY = planetStartY + 180 * Math.sin(angle);
 	
 	planetX2 = planetX;
 	planetY2 = planetY;
@@ -20,38 +20,42 @@ function movePlanet()
 	// planetX = planetStartX + 300 * Math.cos(angle);
 	// planetY = planetStartY + 300 * Math.sin(angle);
 
-	let trythis = Math.sqrt( 1 - Math.pow( (angle / (2 * Math.PI)) - 1, 2))
+	// let trythis = Math.sqrt( 1 - Math.pow( (angle / (2 * Math.PI)) - 1, 2))
 	// console.log(angle, " second ",trythis);
 
 	// if (angle <= (Math.PI / 2 ) + 0.1 && angle >= (Math.PI / 2) - 0.1)
 	// 	movingpart = 1.0;
 	if (angle < Math.PI / 2 || angle > (3 * Math.PI) / 2) // up part
 	{
-		movingpart += trythis;
-
+		// movingpart += trythis/10;
+		movingpart += 0.018;
+		
 		// console.log("first ");
 		// console.log(angle);
 	}
 	else if (angle > Math.PI / 2 && angle < (3 * Math.PI) / 2)
 	{
-		// console.log("second ");
-		movingpart -= trythis;
-		if (movingpart < 0)
-			movingpart *=-1;
-
+		// if (angle > (2 * Math.PI) / 3 || angle < Math.PI / 3)
+		// {
+		// }
+			movingpart -= 0.018;
+			// console.log("second ");
+			// movingpart -= trythis/10;
+			if (movingpart < 0)
+				movingpart *=-1;
 	}
 
-	planetOne.remove();
+	// planetOne.remove();
 	// planetTwo.remove();
 	// radius = 80;
 	// console.log(movingpart);
 	// console.log(movingpart);
 	// radius *= movingpart;
-	// let bob = 0.5 + Math.sqrt( 1 - Math.pow( movingpart - 1, 2));
+	let bob = 0.2 + Math.sqrt( 1 - Math.pow( movingpart - 1, 2));
 	// console.log(bob);
-	// radius *= bob;
+	radius *= bob;
 	// radius *= (trythis + 0.5);
-	radius *= movingpart;
+	// radius *= movingpart;
 	// movingpart = (duration * 3) / Math.pow(range, 3)) * Math.pow(movingpart, 2)
 
 	// sqrt(1 - pow(x - 1, 2))
