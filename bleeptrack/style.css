@@ -1,0 +1,32 @@
+.background[resize]{
+	position: absolute;
+	background: black;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+	z-index: 0;
+}
+
+.tracking[resize]{
+    position: absolute;
+    background-color: transparent;
+	width: 100%;
+    height: 100%;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+    z-index: 1;
+}
+
+video{
+    position: absolute;
+    width: 25%;
+	height: 25%;
+	top: 0;
+    left: 0;
+    z-index: -1;
+}
