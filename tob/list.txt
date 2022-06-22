@@ -1,0 +1,19 @@
+keypoint:  0 	name: "nose"
+keypoint:  1 	name: "left_eye"
+keypoint:  2 	name: "right_eye"
+keypoint:  3 	name: "left_ear"
+keypoint:  4 	name: "right_ear"
+keypoint:  5 	name: "left_shoulder"
+keypoint:  6 	name: "right_shoulder"
+keypoint:  7 	name: "left_elbow"
+keypoint:  8 	name: "right_elbow"
+keypoint:  9 	name: "left_wrist"
+keypoint:  10 	name: "right_wrist"
+keypoint:  11 	name: "left_hip"
+keypoint:  12 	name: "right_hip"
+keypoint:  13 	name: "left_knee"
+keypoint:  14 	name: "right_knee"
+keypoint:  15 	name: "left_ankle"
+
+x ~ 0 - 630 
+y ~ 0 - 460
