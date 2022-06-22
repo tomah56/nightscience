@@ -45,17 +45,17 @@ function movePlanet()
 				movingpart *=-1;
 	}
 
-	// planetOne.remove();
+	planetOne.remove();
 	// planetTwo.remove();
 	// radius = 80;
 	// console.log(movingpart);
 	// console.log(movingpart);
 	// radius *= movingpart;
-	let bob = 0.2 + Math.sqrt( 1 - Math.pow( movingpart - 1, 2));
+	// let bob = 0.2 + Math.sqrt( 1 - Math.pow( movingpart - 1, 2));
 	// console.log(bob);
-	radius *= bob;
+	// radius *= bob;
 	// radius *= (trythis + 0.5);
-	// radius *= movingpart;
+	radius *= movingpart;
 	// movingpart = (duration * 3) / Math.pow(range, 3)) * Math.pow(movingpart, 2)
 
 	// sqrt(1 - pow(x - 1, 2))
@@ -66,6 +66,8 @@ function movePlanet()
 	// planetTwo = new Path.Circle( new Point( planetX2 + 20, planetY2 + 20), radius);
     // planetTwo.fillColor = 'blue';
 }
+
+
 
 async function movementsOneCircle(){
 

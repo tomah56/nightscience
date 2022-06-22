@@ -2,6 +2,12 @@
 let net;
 let video;
 paper.install(window);
+
+
+
+// olores
+let pink42 = '#d101bf';
+
 let count = 0;
 let posPrevx = 0;
 let posPrevy = 0;
@@ -25,9 +31,23 @@ let movingpart = 0;
 
 let nosePoint, leftHandPoint, rightHandPoint;
 
-let planetOne;
+// let planetOne;
 let planetTwo;
+// new
 
+//	initialised in planetCreate
+var planetOne;
+var planetOrbit;
+
+//	initialised onFrame
+var planetMoveTime;
+
+var planetRadius = 100;
+var planetColor = pink42;
+var planetVelocity = 1150;
+
+let shrinkPlanet = 80;
+// end new
 
 window.onload = function() {
     
@@ -63,8 +83,8 @@ window.onload = function() {
         radius: 0
     });
 
-	planetOne = new Path.Circle(new Point( planetStartX,  planetStartY), 80);
-    planetOne.fillColor = 'brown';
+	// planetOne = new Path.Circle(new Point( planetStartX,  planetStartY), 80);
+    // planetOne.fillColor = 'brown';
 
 	// planetTwo = new Path.Circle(new Point( planetStartX,  planetStartY), 80);
     // planetTwo.fillColor = 'blue';
@@ -88,12 +108,17 @@ window.onload = function() {
 	
 	let ccircle = Path.Circle(new Point( rghandmoveDotX, rghandmoveDoty), 10);
 	
+	planetCreate();
+
     video.onloadeddata = function() {
 		setupNet();
         getPose();
 		
         view.onFrame = function(event){
 			
+			// new version
+			planetMove(event);
+
 			// onFrame(event);
             
             
@@ -113,24 +138,24 @@ window.onload = function() {
 				// rect.rotate(3); // rotating rectangle
 				
 				// xn = r * cos(a) and yn = r * sin(a)
-				if (!(event.count % 3))
-				{
-					movePlanet();
-					// angle += 0.01;
-					// if (angle > 2 * Math.PI)
-					// 	angle -= 2 * Math.PI;
-					// planetX = planetStartX + 300 * Math.cos(angle);
-					// planetY = planetStartY + 300 * Math.sin(angle);
-					// planetOne.position = new Point( planetX, planetY);
-				}
+				// if (!(event.count % 3))
+				// {
+				// 	movePlanet();
+				// 	// angle += 0.01;
+				// 	// if (angle > 2 * Math.PI)
+				// 	// 	angle -= 2 * Math.PI;
+				// 	// planetX = planetStartX + 300 * Math.cos(angle);
+				// 	// planetY = planetStartY + 300 * Math.sin(angle);
+				// 	// planetOne.position = new Point( planetX, planetY);
+				// }
 					
 				
 				
-				ccircle2.position = new Point(moveDotX, moveDoty);
-				ccircle.position = new Point(rghandmoveDotX, rghandmoveDoty);
+				// ccircle2.position = new Point(moveDotX, moveDoty);
+				// ccircle.position = new Point(rghandmoveDotX, rghandmoveDoty);
 				
-				ccircle2.fillColor = Color.random();
-				ccircle.fillColor = Color.random();
+				// ccircle2.fillColor = Color.random();
+				// ccircle.fillColor = Color.random();
 				
 				// count++;
 				// if (nosePoint)
