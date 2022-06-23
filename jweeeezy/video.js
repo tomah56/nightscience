@@ -18,7 +18,10 @@ var starsCount = 500;
 var starsVelocity = 1;
 var starsColor = 'white';
 var starsKeyDownCounter = 0;
-
+// tracking movment
+// insert Tom
+let posPrevx = 0;
+let posPrevy = 0;
 
 //																					Variables - Planet
 // insert by Tom
@@ -517,6 +520,8 @@ window.onload = function() {
 			movePlanet();
 			movePlanet2();
 			movePlanet3();
-        }
+			movementsOneCircleSec();
+		}
+
     }
 }
