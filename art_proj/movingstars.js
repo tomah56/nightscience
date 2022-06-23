@@ -1,3 +1,30 @@
+function loadPlanets()
+{
+	planetOne = new Path.Circle({
+		position: new Point( planetStartX,  planetStartY),
+        fillColor: 'brown',
+        radius: 30
+    })
+
+	planetTwo = new Path.Circle({
+		position: new Point( planetStartX,  planetStartY),
+        fillColor: '#d101bf',
+        radius: 90
+    })
+
+	planet3 = new Path.Circle({
+		position: new Point( planetStartX,  planetStartY),
+        fillColor: '#d845bf',
+        radius: 40
+    })
+    
+    sunThemidle = new Path.Circle({
+		position: new Point( planetStartX,  planetStartY),
+        fillColor: 'yellow',
+        radius: 90
+    })
+}
+
 function movePlanet()
 {
 	let pbigA = 200;
@@ -153,7 +180,7 @@ function movePlanet3()
 
 
 
-async function movementsOneCircle(){
+function movementsOneCircle(){
 
 	if (rightHandPoint != undefined && rightHandPoint._position != undefined)
 	{
@@ -184,7 +211,7 @@ async function movementsOneCircle(){
 		// count = 0;
 	}
 }
-async function movementsOneCircleSec()
+function movementsOneCircleSec()
 {
 
 	if (nosePoint != undefined && nosePoint._position != undefined)
@@ -192,25 +219,29 @@ async function movementsOneCircleSec()
 		if ((posPrevx - nosePoint._position.x + 10) < 0)
 		{
 			// console.log("left\n");
-			moveDotX -= 30;
+			planetStartX -= 10;
+			// moveDotX -= 30;
 			posPrevx = nosePoint._position.x;
 		}
 		else if ((nosePoint._position.x - posPrevx + 10) < 0)
 		{
+			planetStartX += 10;
 			// console.log("right\n");
-			moveDotX += 30;
+			// moveDotX += 30;
 			posPrevx = nosePoint._position.x;
 		}
 		if ((posPrevy - nosePoint._position.y + 5) < 0)
 		{
+			planetStartX += 10;
 			// console.log("down\n");
-			moveDoty += 30;
+			// moveDoty += 30;
 			posPrevy = nosePoint._position.y;
 		}
 		else if ((nosePoint._position.y - posPrevy + 5) < 0)
 		{
+			planetStartX -= 10;
 			// console.log("up\n");
-			moveDoty -= 30;
+			// moveDoty -= 30;
 			posPrevy = nosePoint._position.y;
 		}
 	}
