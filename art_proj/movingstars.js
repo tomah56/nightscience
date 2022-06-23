@@ -9,16 +9,13 @@ function movePlanet()
 	let distanceX;
 	let distanceY;
 
-	angle += 0.005;
+	//set the resolution of the movment
+	angle += 0.005 * speed;
 	if (angle > 2 * Math.PI)
 		angle -= 2 * Math.PI;
 	// elliptic movment
-
-		planetX = planetStartX + 500 * Math.cos(angle);
-		planetY = planetStartY + 180 * Math.sin(angle);
-	
-	planetX2 = planetX;
-	planetY2 = planetY;
+	planetX = planetStartX + 500 * Math.cos(angle);
+	planetY = planetStartY + 180 * Math.sin(angle);
 
 	if (planetStartX < planetX)
 		distanceX = planetX - planetStartX;
@@ -30,58 +27,128 @@ function movePlanet()
 	else
 		distanceY = planetStartY - planetY;
 	
-	curvature = (distanceX / (distanceY ));
-	// curvature = curvature
-	// console.log(curvature);
-	// circle movments
-	// planetX = planetStartX + 300 * Math.cos(angle);
-	// planetY = planetStartY + 300 * Math.sin(angle);
+	curvature = (distanceX / distanceY); // determing the position based curvature in the elliptic orbit
+	curvature = 1.1 - Math.exp(-curvature); //makes the shrinking/growth smoot on the edges based on the curvature
 
-	// let trythis = Math.sqrt( 1 - Math.pow( (angle / (2 * Math.PI)) - 1, 2))
-	// console.log(angle, " second ",trythis);
-
-	// if (angle <= (Math.PI / 2 ) + 0.1 && angle >= (Math.PI / 2) - 0.1)
-	// 	movingpart = 1.0;
 	if (angle < Math.PI / 2 || angle > (3 * Math.PI) / 2) // up part
-	{
-		// movingpart += trythis/10;
-		movingpart += 0.0018;
-		
-		// console.log("first ");
-		// console.log(angle);
-	}
+		movingpart += 0.0018 * curvature * speed;
 	else if (angle > Math.PI / 2 && angle < (3 * Math.PI) / 2)
 	{
-		// if (angle > (2 * Math.PI) / 3 || angle < Math.PI / 3)
-		// {
-		// }
-			movingpart -= 0.0018;
-			// console.log("second ");
-			// movingpart -= trythis/10;
-			if (movingpart < 0)
-				movingpart *=-1;
+		movingpart -= 0.0018 * curvature * speed;
+		if (movingpart < 0)
+			movingpart *=-1;
 	}
 
 	planetOne.remove();
-	// planetTwo.remove();
-	// radius = 80;
-	// console.log(movingpart);
-	// console.log(movingpart);
-	// radius *= movingpart;
-	// let bob = 0.2 + Math.sqrt( 1 - Math.pow( movingpart - 1, 2));
-	// console.log(bob);
-	// radius *= bob;
-	// radius *= (trythis + 0.5);
-	radius *= movingpart;
-	// movingpart = (duration * 3) / Math.pow(range, 3)) * Math.pow(movingpart, 2)
 
-	// sqrt(1 - pow(x - 1, 2))
-	// planetY = planetY + planetY / radius; 
+	radius *= movingpart;
 
 	planetOne = new Path.Circle( new Point( planetX, planetY), radius);
-    planetOne.fillColor = 'brown';
-	// planetTwo = new Path.Circle( new Point( planetX2 + 20, planetY2 + 20), radius);
-    // planetTwo.fillColor = 'blue';
+	planetOne.fillColor = 'brown';
+}
+
+function movePlanet2()
+{
+	let pbigA = 200;
+	let pbigB = 150;
+
+	let radius = 90;
+
+	let curvature;
+	let distanceX;
+	let distanceY;
+
+	//set the resolution of the movment
+	angle2 += 0.005 * speed2;
+	if (angle2 > 2 * Math.PI)
+		angle2 -= 2 * Math.PI;
+	// elliptic movment
+	planetX2 = planetStartX + 1000 * Math.cos(angle2);
+	planetY2 = planetStartY + 200 * Math.sin(angle2);
+	
+	if (planetStartX < planetX2)
+		distanceX = planetX2 - planetStartX;
+	else
+		distanceX = planetStartX - planetX2;
+
+	if (planetStartY < planetY2)
+		distanceY = planetY2 - planetStartY;
+	else
+		distanceY = planetStartY - planetY2;
+	
+	curvature = (distanceX / distanceY); // determing the position based curvature in the elliptic orbit
+	curvature = 1.1 - Math.exp(-curvature); //makes the shrinking/growth smoot on the edges based on the curvature
+
+	if (angle2 < Math.PI / 2 || angle2 > (3 * Math.PI) / 2) // up part
+		movingpart2 += 0.0016 * curvature * speed2;
+	else if (angle2 > Math.PI / 2 && angle2 < (3 * Math.PI) / 2)
+	{
+		movingpart2 -= 0.0016 * curvature * speed2;
+		if (movingpart2 < 0)
+			movingpart2 *=-1;
+	}
+
+	planetTwo.remove();
+
+	radius *= movingpart2;
+
+	planetTwo = new Path.Circle( new Point( planetX2, planetY2), radius);
+	planetTwo.fillColor = pink42;
+}
+
+function movePlanet3()
+{
+	let pbigA = 200;
+	let pbigB = 150;
+
+	let radius = 40;
+
+	let curvature;
+	let distanceX;
+	let distanceY;
+
+	//set the resolution of the movment
+	angle3 += 0.005 * speed3;
+	if (angle3 > 2 * Math.PI)
+		angle3 -= 2 * Math.PI;
+	// elliptic movment
+	planetX3 = planetStartX + 180 * Math.cos(angle3);
+	planetY3 = planetStartY + 50 * Math.sin(angle3);
+	
+	if (planetStartX < planetX3)
+		distanceX = planetX3 - planetStartX;
+	else
+		distanceX = planetStartX - planetX3;
+
+	if (planetStartY < planetY3)
+		distanceY = planetY3 - planetStartY;
+	else
+		distanceY = planetStartY - planetY3;
+	
+	curvature = (distanceX / distanceY); // determing the position based curvature in the elliptic orbit
+	curvature = 1.1 - Math.exp(-curvature); //makes the shrinking/growth smoot on the edges based on the curvature
+
+	if (angle3 < Math.PI / 2 || angle3 > (3 * Math.PI) / 2) // up part
+		movingpart3 += 0.0016 * curvature * speed3;
+	else if (angle3 > Math.PI / 2 && angle3 < (3 * Math.PI) / 2)
+	{
+		movingpart3 -= 0.0016 * curvature * speed3;
+		if (movingpart3 < 0)
+			movingpart3 *=-1;
+	}
+
+	planet3.remove();
+
+	radius *= movingpart3;
+
+	planet3 = new Path.Circle( new Point( planetX3, planetY3), radius);
+	planet3.fillColor = '#d845bf';
+	
+	if (angle3 < 0 || angle3 > Math.PI)
+		planet3.insertBelow(sunThemidle);
+
+		// sunThemidle.insertBelow(planet3);
+
 }
 
 
