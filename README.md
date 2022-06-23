@@ -1,24 +1,20 @@
 # nightscience
 
-PROGRESS SO FAR
+FEATURES SO FAR
 
 	//	Background Canvas (black)
-	//	Motion Tracking of Wrists + Head
-	//	Video Canvas with Stars (moving on Keypress), Galaxies (random rotation) and Planet (orbital movement)
-	//	Merged Code into dir/jweeeezy
+	//	Video Canvas with Stars, Galaxies and Planets
+	//	Motion Tracking of Body Parts to generate a Star Sign
 
 NEXT STEPS
 
-	General
-	//	Connect with bleeptrack + 42 Markus for physical setup
-	//	Brainstorm for further steps
-
 	Setup
-	//	What device for night of sciencs? (42 Laptop or sth)?
-	//	Can we get the TV + Webcam?
-	//	Markers for Playing Field
-	//	Testing for Camera FOV + Distance
+	//	Test Laptop + TV + Webcam (FOV + Distance + Arrangement)
+	//	Gaffa-Tape for marking the field around TV
 
 	Coding
-	//	Maybe implement a Spaceship or Astronaut?
-	//	What changes to variables/properties will Hand + Head Movement do?
+	//	Make Code more readable and easily changeable/accessible (global variables which can be easily adjusted, functions which are repeatable for multiple iterations)
+	//	Merge Code into /merge
+	//	Deciding on which features are used and how many iterations
+	//	Limit tracked Body Parts
+	//	Key Mapping to reset Star Signs
