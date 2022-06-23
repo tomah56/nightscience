@@ -54,12 +54,21 @@ let nosePoint, leftHandPoint, rightHandPoint
 let cam_x = 630; //just by messurement, maybe find them somewhere 
 let cam_y = 460; //
 
+// Variables - MovementTracking
+
+let movementBuffer = [];
+let movementSampleSize = 15;
+let snapFlag = false;
+
 // Variables - StarSign
 
 let lastID = 0
 let bodyPoints = []
 let signStarts = []
 let connectionLines = []
+
+let signStarBuffer = [];
+let signStarLines = [];
 //												FUNCTIONS
 
 function randomCoordinate(min, max) {
@@ -255,10 +264,10 @@ async function getPose(){
 
 		if(poses[0]){ //is there a person?
 			
-			if(poses[0].id != lastID){ //we have a new person here because we have not seen this persons ID yet
+			if(poses[0].id != lastID || snapFlag ){ //we have a new person here because we have not seen this persons ID yet
 				lastID = poses[0].id //let's remember the current id/person
 
-				saveFlag = false;
+				snapFlag = false;
 				let possiblePoints = shuffle([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]) //mix up the order of these point IDs so I can later get a random subset from them. this is a nice trick to draw random numbers from a certain set where I want to make sure to not get the same number twice :)
 				//let possiblePoints = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] //mix up the order of these point IDs so I can later get a random subset from them. this is a nice trick to draw random numbers from a certain set where I want to make sure to not get the same number twice :)
 				
@@ -271,8 +280,9 @@ async function getPose(){
 				for(let i = 0; i<connectionLines.length; i++){
 					connectionLines[i].remove()
 				}
-				bodyPoints = []
-				signStarts = []
+				bodyPoints = [];
+				signStarts = [];
+				connectionLines = [];
 				
 				// //create new stars and lines for the new person
 				for(let i = 0; i < Math.random() * 4 + 4; i++){ //i want to have 3-7 points
@@ -301,21 +311,26 @@ async function getPose(){
 				
 				
 			}else{ //no new person, just update position from tracking
-				let mov = 0;
+				let movement = 0;
+
 				for(let i = 0; i<bodyPoints.length; i++){
 					//ok this one is a bit tricky to read:
 					// bodyPoints stores the random point IDs from tracking f.e. 0=left_eye or something
 					//with the loop I now go through all these saved IDs and set them as the position of the matching star/circle
 
+
 					let p = new Point();
 					p = centerPoint(mirrorPoint(poses[0].keypoints[bodyPoints[i]]));
-					mov += Math.abs(p.x - signStarts[i].position.x) + Math.abs(p.y - signStarts[i].position.y)
+					movement += Math.abs(p.x - signStarts[i].position.x) + Math.abs(p.y - signStarts[i].position.y);          
 					p.x = (p.x + signStarts[i].position.x) / 2;
 					p.y = (p.y + signStarts[i].position.y) / 2;
 
 					signStarts[i].position = p;
-
 				}
+
+				//tracking the overall movement of the person
+				//if they stand still, the starSign will be saved
+				trackMovement(movement);
 
 				//I don't want all connection lines to be visible. I only want a few lines and in the best case its the shorter connected lines. that looks more like a star sign I think :)
 				//so I sort the lines by length
@@ -345,12 +360,71 @@ async function getPose(){
 	}
 }
 
+function starSignSnap() {
+	for(var i = 0; i < signStarts.length; i++){
+		var starSingle = new Path.Circle({
+			center: new Point (signStarts[i].position.x, signStarts[i].position.y),
+			radius: 15 });
+		starSingle.radius = signStarts[i].radius;
+		starSingle.fillColor = starsColor;
+		signStarBuffer.push(starSingle);
+	}
+	for(var i = 0; i < connectionLines.length; i++){
+		let newLine = new Path.Line(connectionLines[i].firstSegment.point, connectionLines[i].lastSegment.point);
+		newLine.style = {
+			strokeColor: 'white',
+			strokeWidth: connectionLines[i].strokeWidth,
+			dashArray: [40, 10]
+		};
+		newLine.opacity = 0.5;
+		signStarLines.push(newLine);
+	}
+
+}
+
+//acts as a timer
+function setUpMovement() {
+	for (let i = 0; i < movementSampleSize; i++)
+		movementBuffer[i] = 1000;
+}
+
+function trackMovement(movement) {
+	movementBuffer.shift();
+	movementBuffer.push(movement);
+	let avg = 0;
+	for (let i = 0; i < movementBuffer.length; i++) {
+		avg += movementBuffer[i];
+	}
+	avg /= movementBuffer.length;
+
+	if (avg <= 8)
+	{
+		console.log(connectionLines.lenght);
+		starSignSnap();
+		snapFlag = true;
+		setUpMovement();
+	}
+}
+
+//moves the Saved starsigns around
+function starsSignTranslate(rate){
+	for(var i = 0; i < signStarBuffer.length; i++){
+		signStarBuffer[i].translate(rate, 0);
+	}
+	for (let i = 0; i < signStarLines.length; i++) {
+		signStarLines[i].translate(rate, 0);
+	}
+}
+
+
 //											MAIN EXECUTION
 
 window.onload = function() {
 	paper.setup('tracking');
 	viewSizeWidth = paper.view.size.width;
 	viewSizeHeight = paper.view.size.height;
+
+	setUpMovement();
 
 //	Video Setup
     video = document.getElementById('video');
@@ -362,31 +436,14 @@ window.onload = function() {
             })
     }
 
-// //	Motion Tracking Setup -- Later we should put them into functions
-//     nosePoint = new Path.Circle({
-//         fillColor: 'green',
-//         center: paper.view.center,
-//         radius: 10
-//     })
-//     leftHandPoint = new Path.Circle({
-//         fillColor: 'lightgreen',
-//         center: paper.view.center,
-//         radius: 10
-//     })
-//     rightHandPoint = new Path.Circle({
-//         fillColor: 'lightgreen',
-//         center: paper.view.center,
-//         radius: 10
-//     })
-
 //	Stars Setup
 	starsGenerate();
 
 //	Galaxy Setup
 	galaxyPosition1 = new Point(randomCoordinate(200, viewSizeWidth), randomCoordinate(200, viewSizeHeight));
-	galaxyPosition2 = new Point(randomCoordinate(200, viewSizeWidth), randomCoordinate(200, viewSizeHeight));
+	//galaxyPosition2 = new Point(randomCoordinate(200, viewSizeWidth), randomCoordinate(200, viewSizeHeight));
 	galaxyDraw(galaxyPosition1, galaxyArray1);
-	galaxyDraw(galaxyPosition2, galaxyArray2);
+	//galaxyDraw(galaxyPosition2, galaxyArray2);
 
 //	Planet Setup
 	planetCreate();
@@ -406,16 +463,17 @@ window.onload = function() {
 		view.onFrame = function(event){
 			getPose();
 			starsTranslate();
+			starsSignTranslate(1);
 			planetMove(event);
 			galaxyRotate(galaxyRotationFactor * 0.5, galaxyPosition1, galaxyArray1);
-			galaxyRotate(galaxyRotationFactor * -0.3, galaxyPosition2, galaxyArray2);
-			galaxyRotateCounter++;
-				if (galaxyRotateCounter > 1500){
-						galaxyDirection.x *= -1;
-						galaxyDirection.y *= -1;
-						galaxyRotateCounter = 0;
-						galaxyRotationFactor *= -1;
-					}
+			//galaxyRotate(galaxyRotationFactor * -0.3, galaxyPosition2, galaxyArray2);
+			// galaxyRotateCounter++;
+			// 	if (galaxyRotateCounter > 1500){
+			// 			galaxyDirection.x *= -1;
+			// 			galaxyDirection.y *= -1;
+			// 			galaxyRotateCounter = 0;
+			// 			galaxyRotationFactor *= -1;
+			// 		}
         }
     }
 }
