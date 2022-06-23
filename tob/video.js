@@ -62,6 +62,9 @@ let snapFlag = false;
 
 // Variables - StarSign
 
+let x_offset = 0;
+let y_offset = 0;
+
 let lastID = 0
 let bodyPoints = []
 let signStarts = []
@@ -69,6 +72,12 @@ let connectionLines = []
 
 let signStarBuffer = [];
 let signStarLines = [];
+let signRotationCenter;
+
+let signStarsCount = 7;
+let signCount = 5;
+let signLinesCount = signStarsCount * (signStarsCount - 1) / 2;
+let motionTrigger = 30;
 //												FUNCTIONS
 
 function randomCoordinate(min, max) {
@@ -80,11 +89,23 @@ function randomInt(min, max){
 }
 
 //moves the motiontracking to the screen center
-function centerPoint(pos) {
-	pos.x = pos.x + paper.view.size.width / 2 - cam_x / 2;
-	pos.y = pos.y + paper.view.size.height / 2 - cam_y / 2;
+function centerPoint(pos, center) {
+	pos.x = pos.x + (center.x - cam_x / 2);
+	pos.y = pos.y + (center.y - cam_y / 2);
 	return pos
 };
+
+function randomColor() {
+	let i = randomInt(0, 4);
+	if (i >= 3)
+		return 'white';
+	else if (i == 0)
+		return yellow42;
+	else if (i == 1)
+		return pink42;
+	else if (i == 2)
+		return blue42;
+}
 
 //reverses the mirroring of the webcam
 function mirrorPoint(point) {
@@ -257,22 +278,33 @@ async function setupNet(){
     getPose();
 }
 
+function rotateStarSignCenter(deg) {
+	var radians = (Math.PI / 180) * deg;
+	cos = Math.cos(radians);
+	sin = Math.sin(radians);
+	let nx = (cos * (signRotationCenter.x - viewSizeWidth / 2))
+		+ (sin * (signRotationCenter.y - viewSizeHeight / 2)) + viewSizeWidth / 2;
+	let ny = (cos * (signRotationCenter.y - viewSizeHeight / 2))
+		- (sin * (signRotationCenter.x - viewSizeWidth / 2)) + viewSizeHeight / 2;
+	signRotationCenter.x = nx;
+	signRotationCenter.y = ny;
+}
+
 async function getPose(){
 	if(net){
 		const poses = await net.estimatePoses(video, {flipHorizontal: true});
 
+		rotateStarSignCenter(-0.1)
 
 		if(poses[0]){ //is there a person?
 			
 			if(poses[0].id != lastID || snapFlag ){ //we have a new person here because we have not seen this persons ID yet
 				lastID = poses[0].id //let's remember the current id/person
 
-				snapFlag = false;
-				let possiblePoints = shuffle([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]) //mix up the order of these point IDs so I can later get a random subset from them. this is a nice trick to draw random numbers from a certain set where I want to make sure to not get the same number twice :)
-				//let possiblePoints = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] //mix up the order of these point IDs so I can later get a random subset from them. this is a nice trick to draw random numbers from a certain set where I want to make sure to not get the same number twice :)
-				
-				//let possiblePoints = [0, 5, 6, 7, 8, 9, 10] //handpicked points
+				snapFlag = false; // after a snap we initialze a new starsign
 
+				let possiblePoints = shuffle([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]) //mix up the order of these point IDs so I can later get a random subset from them. this is a nice trick to draw random numbers from a certain set where I want to make sure to not get the same number twice :)
+				
 				//relove all stars and lines from the old person
 				for(let i = 0; i<signStarts.length; i++){
 					signStarts[i].remove()
@@ -284,12 +316,12 @@ async function getPose(){
 				signStarts = [];
 				connectionLines = [];
 				
-				// //create new stars and lines for the new person
-				for(let i = 0; i < Math.random() * 4 + 4; i++){ //i want to have 3-7 points
+				//create new stars and lines for the new person
+				for(let i = 0; i < signStarsCount; i++){ //i want to have 3-7 points
 					bodyPoints.push(possiblePoints[i]) //so I take the first n points from the previously shuffled array
-			
-					let s = new Path.Circle(centerPoint(mirrorPoint(poses[0].keypoints[possiblePoints[i]])), 15);
-					s.fillColor = 'white';
+					
+					let s = new Path.Circle(centerPoint(mirrorPoint(poses[0].keypoints[possiblePoints[i]]), signRotationCenter), randomInt(5, 20));
+					s.fillColor = randomColor();
 					signStarts.push( s ); //also safe the star/cicle shapes somewhere so I can move them around later on
 				}
 				
@@ -305,11 +337,11 @@ async function getPose(){
 						line.opacity = 0.5
 						line.star1 = i //additionally saving the star IDs that belong to this line. makes it easier later on
 						line.star2 = j
+						line.insertBelow(signStarts[i])
 						connectionLines.push(line) //also saving the line shape to change it later
 					}
 				}
-				
-				
+
 			}else{ //no new person, just update position from tracking
 				let movement = 0;
 
@@ -318,9 +350,8 @@ async function getPose(){
 					// bodyPoints stores the random point IDs from tracking f.e. 0=left_eye or something
 					//with the loop I now go through all these saved IDs and set them as the position of the matching star/circle
 
-
 					let p = new Point();
-					p = centerPoint(mirrorPoint(poses[0].keypoints[bodyPoints[i]]));
+					p = centerPoint(mirrorPoint(poses[0].keypoints[bodyPoints[i]]), signRotationCenter);
 					movement += Math.abs(p.x - signStarts[i].position.x) + Math.abs(p.y - signStarts[i].position.y);          
 					p.x = (p.x + signStarts[i].position.x) / 2;
 					p.y = (p.y + signStarts[i].position.y) / 2;
@@ -361,12 +392,27 @@ async function getPose(){
 }
 
 function starSignSnap() {
+	if (signStarBuffer.length >= (signCount - 1) * signStarsCount)
+	{
+		for (let i = 0; i < signStarsCount; i++) {
+			signStarBuffer[0].remove();
+			signStarBuffer.shift();
+		}
+	}
+	if (signStarLines.length >= (signCount - 1) * signLinesCount)
+	{
+		for (let i = 0; i < signLinesCount; i++) {
+			signStarLines[0].remove();
+			signStarLines.shift();
+		}
+	}
+
 	for(var i = 0; i < signStarts.length; i++){
 		var starSingle = new Path.Circle({
 			center: new Point (signStarts[i].position.x, signStarts[i].position.y),
-			radius: 15 });
+			radius: signStarts[i].bounds.width/2 });
 		starSingle.radius = signStarts[i].radius;
-		starSingle.fillColor = starsColor;
+		starSingle.fillColor = signStarts[i].fillColor;
 		signStarBuffer.push(starSingle);
 	}
 	for(var i = 0; i < connectionLines.length; i++){
@@ -377,6 +423,7 @@ function starSignSnap() {
 			dashArray: [40, 10]
 		};
 		newLine.opacity = 0.5;
+		newLine.insertBelow(signStarBuffer[0]);
 		signStarLines.push(newLine);
 	}
 
@@ -389,20 +436,25 @@ function setUpMovement() {
 }
 
 function trackMovement(movement) {
+
+	//add the newest movement, removes the oldest
 	movementBuffer.shift();
 	movementBuffer.push(movement);
+
+	//calculate the average
 	let avg = 0;
 	for (let i = 0; i < movementBuffer.length; i++) {
 		avg += movementBuffer[i];
 	}
 	avg /= movementBuffer.length;
 
-	if (avg <= 8)
+	//snap the sign when person standing still
+	if (avg <= motionTrigger)
 	{
-		console.log(connectionLines.lenght);
 		starSignSnap();
 		snapFlag = true;
 		setUpMovement();
+		rotateStarSignCenter(360/signCount);
 	}
 }
 
@@ -416,6 +468,16 @@ function starsSignTranslate(rate){
 	}
 }
 
+//rotates the starsigns around the canvas center
+function starsSignRotate(rate){
+	for(var i = 0; i < signStarBuffer.length; i++){
+		signStarBuffer[i].rotate(rate, paper.view.center);
+	}
+	for (let i = 0; i < signStarLines.length; i++) {
+		signStarLines[i].rotate(rate, paper.view.center);
+	}
+}
+
 
 //											MAIN EXECUTION
 
@@ -423,6 +485,8 @@ window.onload = function() {
 	paper.setup('tracking');
 	viewSizeWidth = paper.view.size.width;
 	viewSizeHeight = paper.view.size.height;
+
+	signRotationCenter = new Point (viewSizeWidth / 2 - viewSizeHeight / 4, viewSizeHeight / 4);
 
 	setUpMovement();
 
@@ -463,17 +527,9 @@ window.onload = function() {
 		view.onFrame = function(event){
 			getPose();
 			starsTranslate();
-			starsSignTranslate(1);
+			starsSignRotate(0.1);
 			planetMove(event);
 			galaxyRotate(galaxyRotationFactor * 0.5, galaxyPosition1, galaxyArray1);
-			//galaxyRotate(galaxyRotationFactor * -0.3, galaxyPosition2, galaxyArray2);
-			// galaxyRotateCounter++;
-			// 	if (galaxyRotateCounter > 1500){
-			// 			galaxyDirection.x *= -1;
-			// 			galaxyDirection.y *= -1;
-			// 			galaxyRotateCounter = 0;
-			// 			galaxyRotationFactor *= -1;
-			// 		}
         }
     }
 }
