@@ -1,5 +1,6 @@
 //									VARIABLE INITIALISATION AND DECLARATION
-
+let net;
+let video;
 paper.install(window);
 
 // initialised as paper.view.size.* in main function
@@ -19,10 +20,37 @@ var starsColor = 'white';
 
 var starsKeyDownCounter = 0;
 
-//																					Variables - Planet
 
+//																					Variables - Planet
+// insert by Tom
+let planetStartY = 450
+let planetStartX = 750
+let planetX = planetStartX;
+let planetY = planetStartY;
+let planetX2 = planetStartX;
+let planetY2 = planetStartY;
+let planetX3 = planetStartX;
+let planetY3 = planetStartY;
+let angle = (3 * Math.PI) / 2;
+let movingpart = 0.15;
+let angle2 = (3 * Math.PI) / 2;
+let movingpart2 = 0.1;
+let angle3 = (3 * Math.PI) / 2;
+let movingpart3 = 0.15;
+
+
+// planets
+let speed = 1; // setting the speed of the rotation smaller number slowing it down larger number makes it faster
+let planetOne;
+let speed2 = 0.1; // setting the speed of the rotation smaller number slowing it down larger number makes it faster
+let planetTwo;
+let speed3 = 10; // setting the speed of the rotation smaller number slowing it down larger number makes it faster
+let planet3;
+
+
+// end planet
 //	initialised in planetCreate
-var planetOne;
+// var planetOne;
 var planetOrbit;
 
 //	initialised onFrame
@@ -47,8 +75,7 @@ var galaxyPosition2;
 
 //																			Variables - Motion Tracking
 
-let net;
-let video;
+
 let nosePoint, leftHandPoint, rightHandPoint
 
 //												FUNCTIONS
@@ -232,6 +259,7 @@ async function getPose(){
 
 //											MAIN EXECUTION
 
+
 window.onload = function() {
 	paper.setup('tracking');
 	viewSizeWidth = paper.view.size.width;
@@ -274,7 +302,8 @@ window.onload = function() {
 	galaxyDraw(galaxyPosition2, galaxyArray2);
 
 //	Planet Setup
-	planetCreate();
+	// planetCreate();
+	loadPlanets();
 
     video.onloadeddata = function() {
         setupNet();
@@ -291,16 +320,19 @@ window.onload = function() {
 		view.onFrame = function(event){
 			getPose();
 			starsTranslate();
-			planetMove(event);
+			// planetMove(event);
 			galaxyRotate(galaxyRotationFactor * 0.5, galaxyPosition1, galaxyArray1);
 			galaxyRotate(galaxyRotationFactor * -0.3, galaxyPosition2, galaxyArray2);
 			galaxyRotateCounter++;
-				if (galaxyRotateCounter > 1500){
-						galaxyDirection.x *= -1;
-						galaxyDirection.y *= -1;
-						galaxyRotateCounter = 0;
-						galaxyRotationFactor *= -1;
-					}
+			if (galaxyRotateCounter > 1500){
+				galaxyDirection.x *= -1;
+				galaxyDirection.y *= -1;
+				galaxyRotateCounter = 0;
+				galaxyRotationFactor *= -1;
+			}
+			movePlanet();
+			movePlanet2();
+			movePlanet3();
         }
     }
 }
