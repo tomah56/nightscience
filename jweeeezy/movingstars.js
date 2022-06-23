@@ -25,6 +25,7 @@ function loadPlanets()
     })
 }
 
+
 function movePlanet()
 {
 	let pbigA = 200;

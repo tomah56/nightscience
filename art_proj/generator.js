@@ -2,6 +2,12 @@
 let net;
 let video;
 paper.install(window);
+
+
+
+// olores
+let pink42 = '#d101bf';
+
 let count = 0;
 let posPrevx = 0;
 let posPrevy = 0;
@@ -14,20 +20,33 @@ let planetX = planetStartX;
 let planetY = planetStartY;
 let planetX2 = planetStartX;
 let planetY2 = planetStartY;
+let planetX3 = planetStartX;
+let planetY3 = planetStartY;
 
 
 let rghandposPrevx = 0;
 let rghandposPrevy = 0;
 let rghandmoveDotX = 880;
 let rghandmoveDoty = 680;
-let angle = (3 * Math.PI) / 2;
-let movingpart = 0;
-
 let nosePoint, leftHandPoint, rightHandPoint;
 
-let planetOne;
-let planetTwo;
+let angle = (3 * Math.PI) / 2;
+let movingpart = 0.15;
+let angle2 = (3 * Math.PI) / 2;
+let movingpart2 = 0.1;
+let angle3 = (3 * Math.PI) / 2;
+let movingpart3 = 0.15;
 
+
+// planets
+let speed = 1; // setting the speed of the rotation smaller number slowing it down larger number makes it faster
+let planetOne;
+let speed2 = 0.1; // setting the speed of the rotation smaller number slowing it down larger number makes it faster
+let planetTwo;
+let speed3 = 10; // setting the speed of the rotation smaller number slowing it down larger number makes it faster
+let planet3;
+
+let sunThemidle;
 
 window.onload = function() {
     
@@ -48,52 +67,47 @@ window.onload = function() {
     nosePoint = new Path.Circle({
         fillColor: 'red',
         center: paper.view.center,
-        radius: 0
+        radius: 1
     });
     
     leftHandPoint = new Path.Circle({
         fillColor: 'blue',
         center: paper.view.center,
-        radius: 0
+        radius: 1
     });
     
     rightHandPoint = new Path.Circle({
         fillColor: 'green',
         center: paper.view.center,
-        radius: 0
+        radius: 1
     });
 
-	planetOne = new Path.Circle(new Point( planetStartX,  planetStartY), 80);
-    planetOne.fillColor = 'brown';
+	// planetOne = new Path.Circle(new Point( planetStartX,  planetStartY), 80);
+    // planetOne.fillColor = 'brown';
 
 	// planetTwo = new Path.Circle(new Point( planetStartX,  planetStartY), 80);
     // planetTwo.fillColor = 'blue';
 
 
-	// planetOne = new Path.Circle({
-	// 	position: new Point( planetStartX,  planetStartY),
-    //     fillColor: 'brown',
-    //     radius: 30
-    // })
-    
-    //rotating rectangel
-	// var rect = new Path.Rectangle({
-	// 	point: [475, 575],
-	// 	size: [75, 75],
-	// 	strokeColor: 'white'
-	// });
+    loadPlanets();
 
 	
-	ccircle2 = Path.Circle(new Point( moveDotX, moveDoty), 10);
+	// ccircle2 = Path.Circle(new Point( moveDotX, moveDoty), 10);
 	
-	let ccircle = Path.Circle(new Point( rghandmoveDotX, rghandmoveDoty), 10);
+	// let ccircle = Path.Circle(new Point( rghandmoveDotX, rghandmoveDoty), 10);
 	
+	// planetCreate();
+
     video.onloadeddata = function() {
 		setupNet();
         getPose();
 		
         view.onFrame = function(event){
 			
+			// new version
+			// planetMove(event);
+            // end new
+
 			// onFrame(event);
             
             
@@ -113,33 +127,35 @@ window.onload = function() {
 				// rect.rotate(3); // rotating rectangle
 				
 				// xn = r * cos(a) and yn = r * sin(a)
-				if (!(event.count % 3))
-				{
-					movePlanet();
-					// angle += 0.01;
-					// if (angle > 2 * Math.PI)
-					// 	angle -= 2 * Math.PI;
-					// planetX = planetStartX + 300 * Math.cos(angle);
-					// planetY = planetStartY + 300 * Math.sin(angle);
-					// planetOne.position = new Point( planetX, planetY);
-				}
+				// if (!(event.count % 6))
+                movePlanet();
+                movePlanet2();
+                movePlanet3();
+				// {
+                    // 	// angle += 0.01;
+                    // 	// if (angle > 2 * Math.PI)
+                    // 	// 	angle -= 2 * Math.PI;
+                    // 	// planetX = planetStartX + 300 * Math.cos(angle);
+                    // 	// planetY = planetStartY + 300 * Math.sin(angle);
+                    // 	// planetOne.position = new Point( planetX, planetY);
+                    // }
 					
-				
-				
-				ccircle2.position = new Point(moveDotX, moveDoty);
-				ccircle.position = new Point(rghandmoveDotX, rghandmoveDoty);
-				
-				ccircle2.fillColor = Color.random();
-				ccircle.fillColor = Color.random();
-				
-				// count++;
-				// if (nosePoint)
-				// 	console.log(nosePoint._position.x);
-				getPose();
-				
-
-			movementsOneCircleSec();
-			movementsOneCircle();
+                    
+                    
+                    // ccircle2.position = new Point(moveDotX, moveDoty);
+                    // ccircle.position = new Point(rghandmoveDotX, rghandmoveDoty);
+                    
+                    // ccircle2.fillColor = Color.random();
+                    // ccircle.fillColor = Color.random();
+                    
+                    // count++;
+                    // if (nosePoint)
+                    // 	console.log(nosePoint._position.x);
+                    
+                    
+                    movementsOneCircleSec();
+                    getPose();
+			// movementsOneCircle();
         }
     }
 
