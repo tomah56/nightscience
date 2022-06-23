@@ -31,22 +31,22 @@ let movingpart = 0;
 
 let nosePoint, leftHandPoint, rightHandPoint;
 
-// let planetOne;
+let planetOne;
 let planetTwo;
 // new
 
 //	initialised in planetCreate
-var planetOne;
-var planetOrbit;
+// var planetOne;
+// var planetOrbit;
 
-//	initialised onFrame
-var planetMoveTime;
+// //	initialised onFrame
+// var planetMoveTime;
 
-var planetRadius = 100;
-var planetColor = pink42;
-var planetVelocity = 1150;
+// var planetRadius = 100;
+// var planetColor = pink42;
+// var planetVelocity = 1150;
 
-let shrinkPlanet = 80;
+// let shrinkPlanet = 80;
 // end new
 
 window.onload = function() {
@@ -90,11 +90,11 @@ window.onload = function() {
     // planetTwo.fillColor = 'blue';
 
 
-	// planetOne = new Path.Circle({
-	// 	position: new Point( planetStartX,  planetStartY),
-    //     fillColor: 'brown',
-    //     radius: 30
-    // })
+	planetOne = new Path.Circle({
+		position: new Point( planetStartX,  planetStartY),
+        fillColor: 'brown',
+        radius: 30
+    })
     
     //rotating rectangel
 	// var rect = new Path.Rectangle({
@@ -108,7 +108,7 @@ window.onload = function() {
 	
 	let ccircle = Path.Circle(new Point( rghandmoveDotX, rghandmoveDoty), 10);
 	
-	planetCreate();
+	// planetCreate();
 
     video.onloadeddata = function() {
 		setupNet();
@@ -117,7 +117,8 @@ window.onload = function() {
         view.onFrame = function(event){
 			
 			// new version
-			planetMove(event);
+			// planetMove(event);
+            // end new
 
 			// onFrame(event);
             
@@ -138,9 +139,9 @@ window.onload = function() {
 				// rect.rotate(3); // rotating rectangle
 				
 				// xn = r * cos(a) and yn = r * sin(a)
-				// if (!(event.count % 3))
+				// if (!(event.count % 6))
+                    movePlanet();
 				// {
-				// 	movePlanet();
 				// 	// angle += 0.01;
 				// 	// if (angle > 2 * Math.PI)
 				// 	// 	angle -= 2 * Math.PI;

@@ -5,8 +5,11 @@ function movePlanet()
 
 	let radius = 80;
 
+	let curvature;
+	let distanceX;
+	let distanceY;
 
-	angle += 0.05;
+	angle += 0.005;
 	if (angle > 2 * Math.PI)
 		angle -= 2 * Math.PI;
 	// elliptic movment
@@ -16,6 +19,20 @@ function movePlanet()
 	
 	planetX2 = planetX;
 	planetY2 = planetY;
+
+	if (planetStartX < planetX)
+		distanceX = planetX - planetStartX;
+	else
+		distanceX = planetStartX - planetX;
+
+	if (planetStartY < planetY)
+		distanceY = planetY - planetStartY;
+	else
+		distanceY = planetStartY - planetY;
+	
+	curvature = (distanceX / (distanceY ));
+	// curvature = curvature
+	// console.log(curvature);
 	// circle movments
 	// planetX = planetStartX + 300 * Math.cos(angle);
 	// planetY = planetStartY + 300 * Math.sin(angle);
@@ -28,7 +45,7 @@ function movePlanet()
 	if (angle < Math.PI / 2 || angle > (3 * Math.PI) / 2) // up part
 	{
 		// movingpart += trythis/10;
-		movingpart += 0.018;
+		movingpart += 0.0018;
 		
 		// console.log("first ");
 		// console.log(angle);
@@ -38,7 +55,7 @@ function movePlanet()
 		// if (angle > (2 * Math.PI) / 3 || angle < Math.PI / 3)
 		// {
 		// }
-			movingpart -= 0.018;
+			movingpart -= 0.0018;
 			// console.log("second ");
 			// movingpart -= trythis/10;
 			if (movingpart < 0)

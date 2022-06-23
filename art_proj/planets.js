@@ -40,8 +40,9 @@ function planetMove(event){
 	// console.log(tangent);
 	// console.log(planetOrbit.getCurvatureAt(offset));
 	// curveture under 0.0012
-	console.log(planetMoveTime);
-	console.log(offset);
+	// console.log(planetMoveTime);
+	// console.log(offset);
+	// curve = bsquere / a
 
 
 	
