@@ -11,6 +11,7 @@ let pink42 = '#d101bf';
 let yellow42 = '#f1ca37';
 
 var universeVelocity = 2;
+var universeRotationPoint;
 
 //																					Variables - Stars
 
@@ -18,7 +19,7 @@ var starsArray = [];
 var starsCount = 500;
 var starsColor = 'white';
 var starsKeyDownCounter = 0;
-var starsRotationPoint;
+
 
 //																					Variables - Planet
 
@@ -56,14 +57,14 @@ let planet3;
 //	galaxyOne properties
 var galaxyArray1 = [];
 var galaxyPosition1;
-var galaxySizeFactor1 = 0.7;
+var galaxySizeFactor1 = 0.5;
 var galaxyRotationFactor1 = 0.006;
 
 //	galaxyTwo properties
 var galaxyArray2 = [];
 var galaxyPosition2;
 var galaxySizeFactor2 = 0.3;
-var galaxyRotationFactor2 = 0.009;
+var galaxyRotationFactor2 = 0.005;
 
 //																			Variables - Motion Tracking
 
@@ -151,13 +152,12 @@ function starsGenerate(){
 			rotation: 1
 		})
 		starsArray.push(starSingle);
-		starsRotationPoint = new Point (viewSizeWidth / 2, viewSizeHeight);
 	}
 }
 
 function starsRotateUniverse(){
 	for(var i = 0; i < starsArray.length; i++){
-		starsArray[i].rotate(starsArray[i].rate * 0.005, starsRotationPoint);
+		starsArray[i].rotate(starsArray[i].rate * 0.005, universeRotationPoint);
 		if(starsArray[i].position.x > viewSizeWidth){
 			starsArray[i].position.x = 0;
 		}
@@ -174,12 +174,12 @@ function starsRotateUniverse(){
 }
 
 function starsChangeDirectionOnKeyDown(){
-	if(starsKeyDownCounter < 15 && event.key == 'd'){
+	if(starsKeyDownCounter < 50 && event.key == 'd'){
 		universeVelocity += 1;
 		assignRateRandom(starsArray);
 		starsKeyDownCounter++;
 	}
-	if(starsKeyDownCounter > -15 && event.key == 'a'){
+	if(starsKeyDownCounter > -50 && event.key == 'a'){
 		universeVelocity -= 1;
 		assignRateRandom(starsArray);
 		starsKeyDownCounter--;
@@ -448,10 +448,10 @@ function galaxyDraw(galaxyPosition, galaxyArray, galaxySizeFactor){
 	galaxyDrawSpiral(galaxyPosition, offset + 1, 1, 1, galaxyArray, galaxySizeFactor);
 }
 
-//	FUNCTION - rotates the galaxy around starsRotationPoint;
+//	FUNCTION - rotates the galaxy around universeRotationPoint;
 function galaxyRotateUniverse(galaxyRotationFactor, galaxyArray){
 		for (var i = 0; i < galaxyArray.length; i++) {
-		galaxyArray[i].rotate(galaxyRotationFactor * universeVelocity, starsRotationPoint);
+		galaxyArray[i].rotate(galaxyRotationFactor * universeVelocity, universeRotationPoint);
 	}
 }
 
@@ -696,6 +696,7 @@ window.onload = function() {
 	console.log("paper.view.center:", paper.view.center);
 
 
+	universeRotationPoint = paper.view.center;
 	signRotationCenter = new Point (viewSizeWidth / 2 - viewSizeHeight / 4, viewSizeHeight / 4);
 
 	setUpMovement();
@@ -715,9 +716,9 @@ window.onload = function() {
 	assignRateRandom(starsArray);
 
 //	Galaxy Setup
-	galaxyPosition1 = paper.view.center;
+	galaxyPosition1 = new Point(400, 400);
 	console.log("GalaxyPosition1:", galaxyPosition1);
-	galaxyPosition2 = new Point(1300, 2500);
+	galaxyPosition2 = new Point(8000, 4000);
 	console.log("GalaxyPosition2:", galaxyPosition2);
 	galaxyDraw(galaxyPosition1, galaxyArray1, galaxySizeFactor1);
 	galaxyDraw(galaxyPosition2, galaxyArray2, galaxySizeFactor2);
