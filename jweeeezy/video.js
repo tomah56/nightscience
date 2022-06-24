@@ -2,6 +2,11 @@
 
 paper.install(window);
 
+//
+
+// track nose
+// let nosePoint;
+
 // initialised as paper.view.size.* in main function
 var viewSizeHeight;
 var viewSizeWidth;
@@ -266,6 +271,8 @@ function planetsMove()
 
 	planetOne = new Path.Circle( new Point( planetX, planetY), radius);
 	planetOne.fillColor = 'brown';
+	if (angle < 0 || angle > Math.PI)
+		planetOne.insertBelow(sunThemidle);
 }
 
 function planetsMove2()
@@ -315,6 +322,8 @@ function planetsMove2()
 
 	planetTwo = new Path.Circle( new Point( planetX2, planetY2), radius);
 	planetTwo.fillColor = pink42;
+	if (angle2 < 0 || angle2 > Math.PI)
+		planetTwo.insertBelow(sunThemidle);
 }
 
 function planetsMove3()
@@ -367,40 +376,40 @@ function planetsMove3()
 
 	if (angle3 < 0 || angle3 > Math.PI)
 		planet3.insertBelow(sunThemidle);
-
-		// sunThemidle.insertBelow(planet3);
-
 }
+
+let setSteppPlanetGrav = 1;
+let sensibilityLefRigth = 5;
+let sensibilityUpDown = 5;
 
 function planetsMoveOnNosePoint()
 {
-
 	if (nosePoint != undefined && nosePoint._position != undefined)
 	{
-		if ((posPrevx - nosePoint._position.x + 10) < 0)
+		if ((posPrevx - nosePoint._position.x + sensibilityLefRigth) < 0)
 		{
 			// console.log("left\n");
-			planetStartX -= 10;
+			planetStartX -= setSteppPlanetGrav;
 			// moveDotX -= 30;
 			posPrevx = nosePoint._position.x;
 		}
-		else if ((nosePoint._position.x - posPrevx + 10) < 0)
+		else if ((nosePoint._position.x - posPrevx + sensibilityLefRigth) < 0)
 		{
-			planetStartX += 10;
+			planetStartX += setSteppPlanetGrav;
 			// console.log("right\n");
 			// moveDotX += 30;
 			posPrevx = nosePoint._position.x;
 		}
-		if ((posPrevy - nosePoint._position.y + 5) < 0)
+		if ((posPrevy - nosePoint._position.y + sensibilityUpDown) < 0)
 		{
-			planetStartX += 10;
+			planetStartX += setSteppPlanetGrav;
 			// console.log("down\n");
 			// moveDoty += 30;
 			posPrevy = nosePoint._position.y;
 		}
-		else if ((nosePoint._position.y - posPrevy + 5) < 0)
+		else if ((nosePoint._position.y - posPrevy + sensibilityUpDown) < 0)
 		{
-			planetStartX -= 10;
+			planetStartX -= setSteppPlanetGrav;
 			// console.log("up\n");
 			// moveDoty -= 30;
 			posPrevy = nosePoint._position.y;
@@ -502,6 +511,9 @@ async function getPose(){
 
 		if(poses[0]){ //is there a person?
 
+			nosePoint.position = poses[0].keypoints.find(obj => {
+				return obj.name == "nose"
+			})
 			if(poses[0].id != lastID || snapFlag ){ //we have a new person here because we have not seen this persons ID yet
 				lastID = poses[0].id //let's remember the current id/person
 
@@ -733,6 +745,9 @@ window.onload = function() {
 
 	signRotationCenter = new Point (viewSizeWidth / 2 - viewSizeHeight / 4, viewSizeHeight / 4);
 
+	nosePoint = new Path.Circle({
+        radius: 0
+    });
 
 	setUpMovement();
 
@@ -775,7 +790,8 @@ window.onload = function() {
 //																					Event - each Frame
 
 		view.onFrame = function(event){
-			getPose();
+			if (event.count % 7 == 0)
+				getPose();
 			starsRotateUniverse();
 			starSignRotate(0.1);
 			galaxyRotateUniverse(galaxyRotationFactor1, galaxyArray1);
@@ -783,6 +799,7 @@ window.onload = function() {
 			planetsMove();
 			planetsMove2();
 			planetsMove3();
+			sunThemidle.position = new Point( planetStartX,  planetStartY);
 			planetsMoveOnNosePoint();
 
 		}
