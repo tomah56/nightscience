@@ -1,4 +1,5 @@
 //									VARIABLE INITIALISATION AND DECLARATION
+
 let net;
 let video;
 paper.install(window);
@@ -19,88 +20,72 @@ var starsVelocity = 1;
 var starsColor = 'white';
 var starsKeyDownCounter = 0;
 var starsRotationPoint;
-// tracking movment
-// insert Tom
-let posPrevx = 0;
-let posPrevy = 0;
 
 //																					Variables - Planet
-// insert by Tom
+
+let posPrevx = 0;
+let posPrevy = 0;
 let planetStartY = 450
 let planetStartX = 750
+
+//	planetOne properties
 let planetX = planetStartX;
 let planetY = planetStartY;
-let planetX2 = planetStartX;
-let planetY2 = planetStartY;
-let planetX3 = planetStartX;
-let planetY3 = planetStartY;
 let angle = (3 * Math.PI) / 2;
 let movingpart = 0.15;
+let speed = 1;
+let planetOne;
+
+//	planetTwo properties
+let planetX2 = planetStartX;
+let planetY2 = planetStartY;
 let angle2 = (3 * Math.PI) / 2;
 let movingpart2 = 0.1;
+let speed2 = 0.1;
+let planetTwo;
+
+//	planetThree properties
+let planetX3 = planetStartX;
+let planetY3 = planetStartY;
 let angle3 = (3 * Math.PI) / 2;
 let movingpart3 = 0.15;
-
-
-// planets
-let speed = 1; // setting the speed of the rotation smaller number slowing it down larger number makes it faster
-let planetOne;
-let speed2 = 0.1; // setting the speed of the rotation smaller number slowing it down larger number makes it faster
-let planetTwo;
-let speed3 = 10; // setting the speed of the rotation smaller number slowing it down larger number makes it faster
+let speed3 = 10;
 let planet3;
-
-
-// end planet
-//	initialised in planetCreate
-// var planetOne;
-var planetOrbit;
-
-//	initialised onFrame
-var planetMoveTime;
-
-var planetRadius = 100;
-var planetColor = pink42;
-var planetVelocity = 750;
 
 //																					Variables - Galaxy
 
+//	galaxyOne properties
 var galaxyArray1 = [];
-var galaxyArray2 = [];
-
-//	initialised later in main function
 var galaxyPosition1;
-var galaxyPosition2;
-
 var galaxySizeFactor1 = 0.7;
-var galaxySizeFactor2 = 0.3;
-
 var galaxyRotationFactor1 = 5;
+
+//	galaxyTwo properties
+var galaxyArray2 = [];
+var galaxyPosition2;
+var galaxySizeFactor2 = 0.3;
 var galaxyRotationFactor2 = 20;
 
 //																			Variables - Motion Tracking
 
+let nosePoint;
+//just by messurement, maybe find them somewhere
+let cam_x = 630;
+let cam_y = 460;
 
-let nosePoint, leftHandPoint, rightHandPoint
-
-let cam_x = 630; //just by messurement, maybe find them somewhere
-let cam_y = 460; //
-
-// Variables - MovementTracking
-
+//	Variables - MovementTracking
 let movementBuffer = [];
 let movementSampleSize = 15;
 let snapFlag = false;
 
-// Variables - StarSign
-
+//	Variables - StarSign
 let lastID = 0
 let bodyPoints = []
 let signStarts = []
 let connectionLines = []
-
 let signStarBuffer = [];
 let signStarLines = [];
+
 //												FUNCTIONS
 
 function randomCoordinate(min, max) {
@@ -117,36 +102,16 @@ function assignRateRandom(Array){
     }
 }
 
-//moves the motiontracking to the screen center
-function centerPoint(pos) {
-	pos.x = pos.x + paper.view.size.width / 2 - cam_x / 2;
-	pos.y = pos.y + paper.view.size.height / 2 - cam_y / 2;
-	return pos
-};
-
-//reverses the mirroring of the webcam
-function mirrorPoint(point) {
-	point.x = cam_x - point.x;
-	return point
-};
-
-//shuffle an array inplace
-function shuffle(array) {
+function shuffleArray(array) {
 	let currentIndex = array.length,  randomIndex;
-
-	// While there remain elements to shuffle.
 	while (currentIndex != 0) {
-
-	  // Pick a remaining element.
 	  randomIndex = Math.floor(Math.random() * currentIndex);
 	  currentIndex--;
-
-	  // And swap it with the current element.
 	  [array[currentIndex], array[randomIndex]] = [
 		array[randomIndex], array[currentIndex]];
 	}
 	return array;
-  }
+}
 
 //																					Functions - Stars
 
@@ -199,27 +164,222 @@ function starsChangeDirectionOnKeyDown(){
 
 //																					Functions - Planet
 
-function planetCreate(){
+
+function planetsCreate()
+{
 	planetOne = new Path.Circle({
-    position: new Point (800, 1000),
-    fillColor: planetColor,
-    radius: planetRadius,
-	applyMatrix: false
-	})
-	planetOrbit = new Path.Ellipse({
-		position: paper.view.center,
-		size: [800, 350],
-		rotation: 5
-	});
+		position: new Point( planetStartX,  planetStartY),
+        fillColor: 'brown',
+        radius: 30
+    })
+
+	planetTwo = new Path.Circle({
+		position: new Point( planetStartX,  planetStartY),
+        fillColor: '#d101bf',
+        radius: 90
+    })
+
+	planet3 = new Path.Circle({
+		position: new Point( planetStartX,  planetStartY),
+        fillColor: '#d845bf',
+        radius: 40
+    })
+
+    sunThemidle = new Path.Circle({
+		position: new Point( planetStartX,  planetStartY),
+        fillColor: 'yellow',
+        radius: 90
+    })
 }
 
-function planetMove(event){
-	planetMoveTime = event.count % planetVelocity / planetVelocity;
-	var offset = planetMoveTime * planetOrbit.length;
-	var point = planetOrbit.getPointAt(offset);
-	var tangent = planetOrbit.getTangentAt(offset);
-	planetOne.position = point;
-	planetOne.rotation = tangent.angle;
+
+function planetsMove()
+{
+	let pbigA = 200;
+	let pbigB = 150;
+
+	let radius = 80;
+
+	let curvature;
+	let distanceX;
+	let distanceY;
+
+	//set the resolution of the movment
+	angle += 0.005 * speed;
+	if (angle > 2 * Math.PI)
+		angle -= 2 * Math.PI;
+	// elliptic movment
+	planetX = planetStartX + 500 * Math.cos(angle);
+	planetY = planetStartY + 180 * Math.sin(angle);
+
+	if (planetStartX < planetX)
+		distanceX = planetX - planetStartX;
+	else
+		distanceX = planetStartX - planetX;
+
+	if (planetStartY < planetY)
+		distanceY = planetY - planetStartY;
+	else
+		distanceY = planetStartY - planetY;
+
+	curvature = (distanceX / distanceY); // determing the position based curvature in the elliptic orbit
+	curvature = 1.1 - Math.exp(-curvature); //makes the shrinking/growth smoot on the edges based on the curvature
+
+	if (angle < Math.PI / 2 || angle > (3 * Math.PI) / 2) // up part
+		movingpart += 0.0018 * curvature * speed;
+	else if (angle > Math.PI / 2 && angle < (3 * Math.PI) / 2)
+	{
+		movingpart -= 0.0018 * curvature * speed;
+		if (movingpart < 0)
+			movingpart *=-1;
+	}
+
+	planetOne.remove();
+
+	radius *= movingpart;
+
+	planetOne = new Path.Circle( new Point( planetX, planetY), radius);
+	planetOne.fillColor = 'brown';
+}
+
+function planetsMove2()
+{
+	let pbigA = 200;
+	let pbigB = 150;
+
+	let radius = 90;
+
+	let curvature;
+	let distanceX;
+	let distanceY;
+
+	//set the resolution of the movment
+	angle2 += 0.005 * speed2;
+	if (angle2 > 2 * Math.PI)
+		angle2 -= 2 * Math.PI;
+	// elliptic movment
+	planetX2 = planetStartX + 1000 * Math.cos(angle2);
+	planetY2 = planetStartY + 200 * Math.sin(angle2);
+
+	if (planetStartX < planetX2)
+		distanceX = planetX2 - planetStartX;
+	else
+		distanceX = planetStartX - planetX2;
+
+	if (planetStartY < planetY2)
+		distanceY = planetY2 - planetStartY;
+	else
+		distanceY = planetStartY - planetY2;
+
+	curvature = (distanceX / distanceY); // determing the position based curvature in the elliptic orbit
+	curvature = 1.1 - Math.exp(-curvature); //makes the shrinking/growth smoot on the edges based on the curvature
+
+	if (angle2 < Math.PI / 2 || angle2 > (3 * Math.PI) / 2) // up part
+		movingpart2 += 0.0016 * curvature * speed2;
+	else if (angle2 > Math.PI / 2 && angle2 < (3 * Math.PI) / 2)
+	{
+		movingpart2 -= 0.0016 * curvature * speed2;
+		if (movingpart2 < 0)
+			movingpart2 *=-1;
+	}
+
+	planetTwo.remove();
+
+	radius *= movingpart2;
+
+	planetTwo = new Path.Circle( new Point( planetX2, planetY2), radius);
+	planetTwo.fillColor = pink42;
+}
+
+function planetsMove3()
+{
+	let pbigA = 200;
+	let pbigB = 150;
+
+	let radius = 40;
+
+	let curvature;
+	let distanceX;
+	let distanceY;
+
+	//set the resolution of the movment
+	angle3 += 0.005 * speed3;
+	if (angle3 > 2 * Math.PI)
+		angle3 -= 2 * Math.PI;
+	// elliptic movment
+	planetX3 = planetStartX + 180 * Math.cos(angle3);
+	planetY3 = planetStartY + 50 * Math.sin(angle3);
+
+	if (planetStartX < planetX3)
+		distanceX = planetX3 - planetStartX;
+	else
+		distanceX = planetStartX - planetX3;
+
+	if (planetStartY < planetY3)
+		distanceY = planetY3 - planetStartY;
+	else
+		distanceY = planetStartY - planetY3;
+
+	curvature = (distanceX / distanceY); // determing the position based curvature in the elliptic orbit
+	curvature = 1.1 - Math.exp(-curvature); //makes the shrinking/growth smoot on the edges based on the curvature
+
+	if (angle3 < Math.PI / 2 || angle3 > (3 * Math.PI) / 2) // up part
+		movingpart3 += 0.0016 * curvature * speed3;
+	else if (angle3 > Math.PI / 2 && angle3 < (3 * Math.PI) / 2)
+	{
+		movingpart3 -= 0.0016 * curvature * speed3;
+		if (movingpart3 < 0)
+			movingpart3 *=-1;
+	}
+
+	planet3.remove();
+
+	radius *= movingpart3;
+
+	planet3 = new Path.Circle( new Point( planetX3, planetY3), radius);
+	planet3.fillColor = '#d845bf';
+
+	if (angle3 < 0 || angle3 > Math.PI)
+		planet3.insertBelow(sunThemidle);
+
+		// sunThemidle.insertBelow(planet3);
+
+}
+
+function movementsOneCircleSec()
+{
+
+	if (nosePoint != undefined && nosePoint._position != undefined)
+	{
+		if ((posPrevx - nosePoint._position.x + 10) < 0)
+		{
+			// console.log("left\n");
+			planetStartX -= 10;
+			// moveDotX -= 30;
+			posPrevx = nosePoint._position.x;
+		}
+		else if ((nosePoint._position.x - posPrevx + 10) < 0)
+		{
+			planetStartX += 10;
+			// console.log("right\n");
+			// moveDotX += 30;
+			posPrevx = nosePoint._position.x;
+		}
+		if ((posPrevy - nosePoint._position.y + 5) < 0)
+		{
+			planetStartX += 10;
+			// console.log("down\n");
+			// moveDoty += 30;
+			posPrevy = nosePoint._position.y;
+		}
+		else if ((nosePoint._position.y - posPrevy + 5) < 0)
+		{
+			planetStartX -= 10;
+			// console.log("up\n");
+			// moveDoty -= 30;
+			posPrevy = nosePoint._position.y;
+		}
+	}
 }
 
 //																					Functions - Galaxy
@@ -272,7 +432,6 @@ function galaxyRotateUniverse(galaxyRotationFactor, galaxyArray){
 }
 
 function galaxyRotateCenter(galaxyRotationFactor, galaxyArray, galaxyPosition){
-	console.log(galaxyPosition);
 	for (var i = 0; i < galaxyArray.length; i++) {
 		galaxyArray[i].rotate(galaxyRotationFactor, galaxyPosition);
 	}
@@ -304,7 +463,7 @@ async function getPose(){
 				lastID = poses[0].id //let's remember the current id/person
 
 				snapFlag = false;
-				let possiblePoints = shuffle([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]) //mix up the order of these point IDs so I can later get a random subset from them. this is a nice trick to draw random numbers from a certain set where I want to make sure to not get the same number twice :)
+				let possiblePoints = shuffleArray([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]) //mix up the order of these point IDs so I can later get a random subset from them. this is a nice trick to draw random numbers from a certain set where I want to make sure to not get the same number twice :)
 				//let possiblePoints = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] //mix up the order of these point IDs so I can later get a random subset from them. this is a nice trick to draw random numbers from a certain set where I want to make sure to not get the same number twice :)
 
 				//let possiblePoints = [0, 5, 6, 7, 8, 9, 10] //handpicked points
@@ -322,7 +481,7 @@ async function getPose(){
 
 				// //create new stars and lines for the new person
 				for(let i = 0; i < Math.random() * 4 + 4; i++){ //i want to have 3-7 points
-					bodyPoints.push(possiblePoints[i]) //so I take the first n points from the previously shuffled array
+					bodyPoints.push(possiblePoints[i]) //so I take the first n points from the previously shuffleArrayd array
 
 					let s = new Path.Circle(centerPoint(mirrorPoint(poses[0].keypoints[possiblePoints[i]])), 15);
 					s.fillColor = 'white';
@@ -396,6 +555,19 @@ async function getPose(){
 	}
 }
 
+//	Function - moves the motiontracking to the screen center
+function centerPoint(pos) {
+	pos.x = pos.x + paper.view.size.width / 2 - cam_x / 2;
+	pos.y = pos.y + paper.view.size.height / 2 - cam_y / 2;
+	return pos
+};
+
+//	Function - reverses the mirroring of the webcam
+function mirrorPoint(point) {
+	point.x = cam_x - point.x;
+	return point
+};
+
 function starSignSnap() {
 	for(var i = 0; i < signStarts.length; i++){
 		var starSingle = new Path.Circle({
@@ -418,7 +590,7 @@ function starSignSnap() {
 
 }
 
-//acts as a timer
+//	Function - acts as a timer
 function setUpMovement() {
 	for (let i = 0; i < movementSampleSize; i++)
 		movementBuffer[i] = 1000;
@@ -435,14 +607,14 @@ function trackMovement(movement) {
 
 	if (avg <= 8)
 	{
-		console.log(connectionLines.lenght);
+		console.log(connectionLines.length);
 		starSignSnap();
 		snapFlag = true;
 		setUpMovement();
 	}
 }
 
-//moves the Saved starsigns around
+//	Function - moves the Saved starsigns around
 function starsSignTranslate(rate){
 	for(var i = 0; i < signStarBuffer.length; i++){
 		signStarBuffer[i].translate(rate, 0);
@@ -484,8 +656,7 @@ window.onload = function() {
 	galaxyDraw(galaxyPosition2, galaxyArray2, galaxySizeFactor2);
 
 //	Planet Setup
-	// planetCreate();
-	loadPlanets();
+	planetsCreate();
 
     video.onloadeddata = function() {
         setupNet();
@@ -506,9 +677,9 @@ window.onload = function() {
 
 			galaxyRotateCenter(galaxyRotationFactor1, galaxyArray1, galaxyPosition1);
 			galaxyRotateCenter(galaxyRotationFactor2, galaxyArray2, galaxyPosition2);
-			movePlanet();
-			movePlanet2();
-			movePlanet3();
+			planetsMove();
+			planetsMove2();
+			planetsMove3();
 			movementsOneCircleSec();
 		}
 
