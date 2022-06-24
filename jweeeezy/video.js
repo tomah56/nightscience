@@ -574,12 +574,13 @@ async function getPose(){
 	}
 }
 
-//	Function - moves the motiontracking to the screen center
-function centerPoint(pos) {
-	pos.x = pos.x + paper.view.size.width / 2 - cam_x / 2;
-	pos.y = pos.y + paper.view.size.height / 2 - cam_y / 2;
+//moves the motiontracking to the screen center
+function centerPoint(pos, center) {
+	pos.x = pos.x + (center.x - cam_x / 2);
+	pos.y = pos.y + (center.y - cam_y / 2);
 	return pos
-}
+};
+
 
 //	Function - reverses the mirroring of the webcam
 function mirrorPoint(point) {
@@ -699,6 +700,7 @@ window.onload = function() {
 	universeRotationPoint = paper.view.center;
 	signRotationCenter = new Point (viewSizeWidth / 2 - viewSizeHeight / 4, viewSizeHeight / 4);
 
+
 	setUpMovement();
 
 //	Video Setup
@@ -748,6 +750,7 @@ window.onload = function() {
 			planetsMove2();
 			planetsMove3();
 			planetsMoveOnNosePoint();
+
 		}
 
     }
