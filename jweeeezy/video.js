@@ -99,6 +99,8 @@ let signCount = 5;
 let signLinesCount = signStarsCount * (signStarsCount - 1) / 2;
 let motionTrigger = 30;
 
+let fullCircle = 0;
+
 //												FUNCTIONS
 
 function randomCoordinate(min, max) {
@@ -474,11 +476,29 @@ async function setupNet(){
     getPose();
 }
 
+function cleanMotionCapture() {
+					//relove all stars and lines from the old person
+					for(let i = 0; i<signStarts.length; i++){
+						signStarts[i].remove()
+					}
+					for(let i = 0; i<connectionLines.length; i++){
+						connectionLines[i].remove()
+					}
+					bodyPoints = [];
+					signStarts = [];
+					connectionLines = [];
+}
+
 async function getPose(){
 	if(net){
 		const poses = await net.estimatePoses(video, {flipHorizontal: true});
 
 		starSignRotateCenter(-0.1);
+
+		if (fullCircle >= signCount){
+			cleanMotionCapture();
+			return;
+		}
 
 		if(poses[0]){ //is there a person?
 
@@ -489,16 +509,7 @@ async function getPose(){
 
 				let possiblePoints = shuffleArray([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]) //mix up the order of these point IDs so I can later get a random subset from them. this is a nice trick to draw random numbers from a certain set where I want to make sure to not get the same number twice :)
 
-				//relove all stars and lines from the old person
-				for(let i = 0; i<signStarts.length; i++){
-					signStarts[i].remove()
-				}
-				for(let i = 0; i<connectionLines.length; i++){
-					connectionLines[i].remove()
-				}
-				bodyPoints = [];
-				signStarts = [];
-				connectionLines = [];
+				cleanMotionCapture();
 
 				//create new stars and lines for the new person
 				for(let i = 0; i < signStarsCount; i++){ //i want to have 3-7 points
@@ -617,7 +628,18 @@ function trackMovement(movement) {
 	}
 }
 
-function starSignSnap() {
+function cleanStarSigns() {
+	for (let i = 0; i < signCount * signStarsCount; i++) {
+		signStarBuffer[0].remove();
+		signStarBuffer.shift();
+	}
+	for (let i = 0; i < signLinesCount * signCount; i++) {
+		signStarLines[0].remove();
+		signStarLines.shift();
+	}
+}
+
+function starSignRollingCleanup() {
 	if (signStarBuffer.length >= (signCount - 1) * signStarsCount)
 	{
 		for (let i = 0; i < signStarsCount; i++) {
@@ -632,6 +654,18 @@ function starSignSnap() {
 			signStarLines.shift();
 		}
 	}
+}
+
+function resetStarSigns() {
+	console.log("lol");
+	if (event.key == 'q') {
+		cleanStarSigns();
+		fullCircle = 0;
+	}
+}
+
+function starSignSnap() {
+	fullCircle += 1;
 	for(var i = 0; i < signStarts.length; i++){
 		var starSingle = new Path.Circle({
 			center: new Point (signStarts[i].position.x, signStarts[i].position.y),
@@ -736,6 +770,7 @@ window.onload = function() {
 
 		view.onKeyDown = function(event){
 			starsChangeDirectionOnKeyDown();
+			resetStarSigns();
 		}
 
 //																					Event - each Frame

@@ -78,6 +78,8 @@ let signStarsCount = 7;
 let signCount = 5;
 let signLinesCount = signStarsCount * (signStarsCount - 1) / 2;
 let motionTrigger = 30;
+
+let fullCircle = 0;
 //												FUNCTIONS
 
 function randomCoordinate(min, max) {
@@ -296,6 +298,19 @@ async function getPose(){
 
 		rotateStarSignCenter(-0.1)
 
+		if (fullCircle >= 5)
+		{
+			for(let i = 0; i<signStarts.length; i++){
+				signStarts[i].remove()
+			}
+			for(let i = 0; i<connectionLines.length; i++){
+				connectionLines[i].remove()
+			}
+			bodyPoints = [];
+			signStarts = [];
+			connectionLines = [];
+			return ;
+		}
 		if(poses[0]){ //is there a person?
 			
 			if(poses[0].id != lastID || snapFlag ){ //we have a new person here because we have not seen this persons ID yet
@@ -392,20 +407,22 @@ async function getPose(){
 }
 
 function starSignSnap() {
-	if (signStarBuffer.length >= (signCount - 1) * signStarsCount)
-	{
-		for (let i = 0; i < signStarsCount; i++) {
-			signStarBuffer[0].remove();
-			signStarBuffer.shift();
-		}
-	}
-	if (signStarLines.length >= (signCount - 1) * signLinesCount)
-	{
-		for (let i = 0; i < signLinesCount; i++) {
-			signStarLines[0].remove();
-			signStarLines.shift();
-		}
-	}
+	fullCircle += 1;
+
+	// if (signStarBuffer.length >= (signCount - 1) * signStarsCount)
+	// {
+	// 	for (let i = 0; i < signStarsCount; i++) {
+	// 		signStarBuffer[0].remove();
+	// 		signStarBuffer.shift();
+	// 	}
+	// }
+	// if (signStarLines.length >= (signCount - 1) * signLinesCount)
+	// {
+	// 	for (let i = 0; i < signLinesCount; i++) {
+	// 		signStarLines[0].remove();
+	// 		signStarLines.shift();
+	// 	}
+	// }
 
 	for(var i = 0; i < signStarts.length; i++){
 		var starSingle = new Path.Circle({
