@@ -10,11 +10,12 @@ let blue42 = '#00babc';
 let pink42 = '#d101bf';
 let yellow42 = '#f1ca37';
 
+var universeVelocity = 2;
+
 //																					Variables - Stars
 
 var starsArray = [];
 var starsCount = 500;
-var starsVelocity = 1;
 var starsColor = 'white';
 var starsKeyDownCounter = 0;
 var starsRotationPoint;
@@ -56,13 +57,13 @@ let planet3;
 var galaxyArray1 = [];
 var galaxyPosition1;
 var galaxySizeFactor1 = 0.7;
-var galaxyRotationFactor1 = 5;
+var galaxyRotationFactor1 = 0.006;
 
 //	galaxyTwo properties
 var galaxyArray2 = [];
 var galaxyPosition2;
 var galaxySizeFactor2 = 0.3;
-var galaxyRotationFactor2 = 20;
+var galaxyRotationFactor2 = 0.009;
 
 //																			Variables - Motion Tracking
 
@@ -100,7 +101,7 @@ let motionTrigger = 30;
 //												FUNCTIONS
 
 function randomCoordinate(min, max) {
-	return Math.random() * (max - min) + min;
+	return Math.random() * (max - min + 0.1) + min;
 }
 
 function randomInt(min, max){
@@ -121,7 +122,7 @@ function randomColor() {
 
 function assignRateRandom(Array){
     for (var i = 0; i < Array.length; i++ ){
-		Array[i].rate = randomInt(0.1, 1) + starsVelocity;
+		Array[i].rate = randomInt(0.1, 1) + universeVelocity;
     }
 }
 
@@ -150,7 +151,7 @@ function starsGenerate(){
 			rotation: 1
 		})
 		starsArray.push(starSingle);
-		starsRotationPoint = new Point (viewSizeWidth / 2, viewSizeHeight * 2);
+		starsRotationPoint = new Point (viewSizeWidth / 2, viewSizeHeight);
 	}
 }
 
@@ -174,12 +175,12 @@ function starsRotateUniverse(){
 
 function starsChangeDirectionOnKeyDown(){
 	if(starsKeyDownCounter < 15 && event.key == 'd'){
-		starsVelocity += 1;
+		universeVelocity += 1;
 		assignRateRandom(starsArray);
 		starsKeyDownCounter++;
 	}
 	if(starsKeyDownCounter > -15 && event.key == 'a'){
-		starsVelocity -= 1;
+		universeVelocity -= 1;
 		assignRateRandom(starsArray);
 		starsKeyDownCounter--;
 	}
@@ -369,7 +370,7 @@ function planetsMove3()
 
 }
 
-function movementsOneCircleSec()
+function planetsMoveOnNosePoint()
 {
 
 	if (nosePoint != undefined && nosePoint._position != undefined)
@@ -450,13 +451,13 @@ function galaxyDraw(galaxyPosition, galaxyArray, galaxySizeFactor){
 //	FUNCTION - rotates the galaxy around starsRotationPoint;
 function galaxyRotateUniverse(galaxyRotationFactor, galaxyArray){
 		for (var i = 0; i < galaxyArray.length; i++) {
-		galaxyArray[i].rotate(galaxyRotationFactor, starsRotationPoint);
+		galaxyArray[i].rotate(galaxyRotationFactor * universeVelocity, starsRotationPoint);
 	}
 }
 
 function galaxyRotateCenter(galaxyRotationFactor, galaxyArray, galaxyPosition){
 	for (var i = 0; i < galaxyArray.length; i++) {
-		galaxyArray[i].rotate(galaxyRotationFactor, galaxyPosition);
+		galaxyArray[i].rotate(galaxyRotationFactor * universeVelocity, galaxyPosition);
 	}
 }
 
@@ -464,14 +465,12 @@ function galaxyRotateCenter(galaxyRotationFactor, galaxyArray, galaxyPosition){
 //																			Functions - Motion Tracking
 
 async function setupNet(){
-
     const detectorConfig = {
-                    modelType: poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING,
-                    enableTracking: true,
-                    trackerType: poseDetection.TrackerType.BoundingBox
+		modelType: poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING,
+		enableTracking: true,
+		trackerType: poseDetection.TrackerType.BoundingBox
     };
     net = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
-
     getPose();
 }
 
@@ -571,7 +570,6 @@ async function getPose(){
 					}
 				}
 			}
-
 		}
 	}
 }
@@ -581,50 +579,12 @@ function centerPoint(pos) {
 	pos.x = pos.x + paper.view.size.width / 2 - cam_x / 2;
 	pos.y = pos.y + paper.view.size.height / 2 - cam_y / 2;
 	return pos
-};
+}
 
 //	Function - reverses the mirroring of the webcam
 function mirrorPoint(point) {
 	point.x = cam_x - point.x;
 	return point
-};
-
-function starSignSnap() {
-	if (signStarBuffer.length >= (signCount - 1) * signStarsCount)
-	{
-		for (let i = 0; i < signStarsCount; i++) {
-			signStarBuffer[0].remove();
-			signStarBuffer.shift();
-		}
-	}
-	if (signStarLines.length >= (signCount - 1) * signLinesCount)
-	{
-		for (let i = 0; i < signLinesCount; i++) {
-			signStarLines[0].remove();
-			signStarLines.shift();
-		}
-	}
-
-	for(var i = 0; i < signStarts.length; i++){
-		var starSingle = new Path.Circle({
-			center: new Point (signStarts[i].position.x, signStarts[i].position.y),
-			radius: signStarts[i].bounds.width/2 });
-		starSingle.radius = signStarts[i].radius;
-		starSingle.fillColor = signStarts[i].fillColor;
-		signStarBuffer.push(starSingle);
-	}
-	for(var i = 0; i < connectionLines.length; i++){
-		let newLine = new Path.Line(connectionLines[i].firstSegment.point, connectionLines[i].lastSegment.point);
-		newLine.style = {
-			strokeColor: 'white',
-			strokeWidth: connectionLines[i].strokeWidth,
-			dashArray: [40, 10]
-		};
-		newLine.opacity = 0.5;
-		newLine.insertBelow(signStarBuffer[0]);
-		signStarLines.push(newLine);
-	}
-
 }
 
 //	Function - acts as a timer
@@ -656,15 +616,51 @@ function trackMovement(movement) {
 	}
 }
 
+function starSignSnap() {
+	if (signStarBuffer.length >= (signCount - 1) * signStarsCount)
+	{
+		for (let i = 0; i < signStarsCount; i++) {
+			signStarBuffer[0].remove();
+			signStarBuffer.shift();
+		}
+	}
+	if (signStarLines.length >= (signCount - 1) * signLinesCount)
+	{
+		for (let i = 0; i < signLinesCount; i++) {
+			signStarLines[0].remove();
+			signStarLines.shift();
+		}
+	}
+	for(var i = 0; i < signStarts.length; i++){
+		var starSingle = new Path.Circle({
+			center: new Point (signStarts[i].position.x, signStarts[i].position.y),
+			radius: signStarts[i].bounds.width/2 });
+		starSingle.radius = signStarts[i].radius;
+		starSingle.fillColor = signStarts[i].fillColor;
+		signStarBuffer.push(starSingle);
+	}
+	for(var i = 0; i < connectionLines.length; i++){
+		let newLine = new Path.Line(connectionLines[i].firstSegment.point, connectionLines[i].lastSegment.point);
+		newLine.style = {
+			strokeColor: 'white',
+			strokeWidth: connectionLines[i].strokeWidth,
+			dashArray: [40, 10]
+		};
+		newLine.opacity = 0.5;
+		newLine.insertBelow(signStarBuffer[0]);
+		signStarLines.push(newLine);
+	}
+}
+
 //	Function - moves the Saved starsigns around
-// function starSignTranslate(rate){
-// 	for(var i = 0; i < signStarBuffer.length; i++){
-// 		signStarBuffer[i].translate(rate, 0);
-// 	}
-// 	for (let i = 0; i < signStarLines.length; i++) {
-// 		signStarLines[i].translate(rate, 0);
-// 	}
-// }
+function starSignTranslate(rate){
+	for(var i = 0; i < signStarBuffer.length; i++){
+		signStarBuffer[i].translate(rate, 0);
+	}
+	for (let i = 0; i < signStarLines.length; i++) {
+		signStarLines[i].translate(rate, 0);
+	}
+}
 
 //rotates the starsigns around the canvas center
 function starSignRotate(rate){
@@ -694,7 +690,11 @@ function starSignRotateCenter(deg) {
 window.onload = function() {
 	paper.setup('tracking');
 	viewSizeWidth = paper.view.size.width;
+	console.log("viewSizeWidth:", viewSizeWidth);
 	viewSizeHeight = paper.view.size.height;
+	console.log("viewSizeHeight:", viewSizeHeight);
+	console.log("paper.view.center:", paper.view.center);
+
 
 	signRotationCenter = new Point (viewSizeWidth / 2 - viewSizeHeight / 4, viewSizeHeight / 4);
 
@@ -715,8 +715,10 @@ window.onload = function() {
 	assignRateRandom(starsArray);
 
 //	Galaxy Setup
-	galaxyPosition1 = new Point(randomCoordinate(viewSizeWidth / 2 - 100, viewSizeWidth / 2 + 100), randomCoordinate(viewSizeHeight / 2 - 50, viewSizeHeight / 2 + 50));
-	galaxyPosition2 = new Point(randomCoordinate(viewSizeWidth / 2 - 100, viewSizeWidth / 2 + 100), randomCoordinate(viewSizeHeight / 2 - 50, viewSizeHeight / 2 + 50));
+	galaxyPosition1 = paper.view.center;
+	console.log("GalaxyPosition1:", galaxyPosition1);
+	galaxyPosition2 = new Point(1300, 2500);
+	console.log("GalaxyPosition2:", galaxyPosition2);
 	galaxyDraw(galaxyPosition1, galaxyArray1, galaxySizeFactor1);
 	galaxyDraw(galaxyPosition2, galaxyArray2, galaxySizeFactor2);
 
@@ -739,12 +741,12 @@ window.onload = function() {
 			getPose();
 			starsRotateUniverse();
 			starSignRotate(0.1);
-			galaxyRotateCenter(galaxyRotationFactor1, galaxyArray1, galaxyPosition1);
-			galaxyRotateCenter(galaxyRotationFactor2, galaxyArray2, galaxyPosition2);
+			galaxyRotateUniverse(galaxyRotationFactor1, galaxyArray1);
+			galaxyRotateUniverse(galaxyRotationFactor2, galaxyArray2);
 			planetsMove();
 			planetsMove2();
 			planetsMove3();
-			movementsOneCircleSec();
+			planetsMoveOnNosePoint();
 		}
 
     }
