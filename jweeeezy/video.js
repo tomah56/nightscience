@@ -64,23 +64,27 @@ var galaxyArray1 = [];
 var galaxyPosition1;
 var galaxySizeFactor1 = 0.9;
 var galaxyRotationFactor1 = galaxySizeFactor1 * 0.015;
+var	galaxyVariance1 = 16;
 
 //	galaxyTwo properties
 var galaxyArray2 = [];
 var galaxyPosition2;
 var galaxySizeFactor2 = 0.3;
-var galaxyRotationFactor2 = galaxySizeFactor2 * 0.04;
+var galaxyRotationFactor2 = galaxySizeFactor2 * 0.015;
+var	galaxyVariance2 = 80;
 
 //	galaxyThree properties
 var	galaxyArray3 = [];
 var	galaxyPosition3;
 var galaxySizeFactor3 = 0.58;
-var	galaxyRotationFactor3 = galaxySizeFactor3 * 0.015;
+var	galaxyRotationFactor3 = galaxySizeFactor3 * 0.02;
+var	galaxyVariance3 = 45;
 
 var	galaxyArray4 = [];
 var	galaxyPosition4;
 var galaxySizeFactor4 = 0.6;
 var	galaxyRotationFactor4 = galaxySizeFactor4 * 0.015;
+var	galaxyVariance4 = 25;
 
 //																			Variables - Motion Tracking
 
@@ -110,10 +114,10 @@ let signStarBuffer = [];
 let signStarLines = [];
 let signRotationCenter;
 
-let signStarsCount = 7;
+let signStarsCount = 5;
 let signCount = 5;
 let signLinesCount = signStarsCount * (signStarsCount - 1) / 2;
-let motionTrigger = 30;
+let motionTrigger = 20;
 
 let fullCircle = 0;
 
@@ -192,12 +196,12 @@ function starsRotateUniverse(){
 }
 
 function starsChangeDirectionOnKeyDown(){
-	if(starsKeyDownCounter < 75 && event.key == 'd'){
+	if(starsKeyDownCounter < 1000 && event.key == 'd'){
 		universeVelocity += 1;
 		assignRateRandom(starsArray);
 		starsKeyDownCounter++;
 	}
-	if(starsKeyDownCounter > -75 && event.key == 'a'){
+	if(starsKeyDownCounter > -1000 && event.key == 'a'){
 		universeVelocity -= 1;
 		assignRateRandom(starsArray);
 		starsKeyDownCounter--;
@@ -448,15 +452,15 @@ function galaxyRandomizeCircle(position, galaxyArray, galaxySizeFactor){
 }
 
 //	FUNCTION - draw a spiral with center position
-function galaxyDrawSpiral(position, offset, width, height, galaxyArray, galaxySizeFactor){
+function galaxyDrawSpiral(position, offset, width, height, galaxyArray, galaxySizeFactor, galaxyVariance){
 
-	for (var i = 0; i < 100 + (randomInt(1, 50) * galaxySizeFactor); i++) {
+	for (var i = 0; i < 100 + (galaxyVariance * galaxySizeFactor); i++) {
 		var np = new Point();
 		var galaxySpiralRadius = (i + Math.random() / 0.5) * Math.PI / 24 + offset * Math.PI;
 		np.x = position.x + Math.sin(galaxySpiralRadius) * width  * galaxySizeFactor / 2;
 		np.y = position.y + Math.cos(galaxySpiralRadius) * height  * galaxySizeFactor / 2;
-		np.x = (np.x - position.x) * i * i / 30 + position.x + (randomInt(1, 20) * galaxySizeFactor);
-		np.y = (np.y - position.y) * i * i / 30 + position.y + (randomInt(1, 20) * galaxySizeFactor);
+		np.x = (np.x - position.x) * i * i / 30 + position.x + (randomInt(1, galaxyVariance) * galaxySizeFactor);
+		np.y = (np.y - position.y) * i * i / 30 + position.y + (randomInt(1, galaxyVariance) * galaxySizeFactor);
 		galaxyRandomizeCircle(np, galaxyArray, galaxySizeFactor);
 		galaxyRandomizeCircle(np, galaxyArray, galaxySizeFactor);
 		galaxyRandomizeCircle(np, galaxyArray, galaxySizeFactor);
@@ -464,10 +468,10 @@ function galaxyDrawSpiral(position, offset, width, height, galaxyArray, galaxySi
 }
 
 //	FUNCTION - draws a Galaxy with the center at center
-function galaxyDraw(galaxyPosition, galaxyArray, galaxySizeFactor){
+function galaxyDraw(galaxyPosition, galaxyArray, galaxySizeFactor, galaxyVariance){
 	var offset = Math.random();
-	galaxyDrawSpiral(galaxyPosition, offset, 1, 1, galaxyArray, galaxySizeFactor);
-	galaxyDrawSpiral(galaxyPosition, offset + 1, 1, 1, galaxyArray, galaxySizeFactor);
+	galaxyDrawSpiral(galaxyPosition, offset, 1, 1, galaxyArray, galaxySizeFactor, galaxyVariance);
+	galaxyDrawSpiral(galaxyPosition, offset + 1, 1, 1, galaxyArray, galaxySizeFactor, galaxyVariance);
 }
 
 //	FUNCTION - rotates the galaxy around universeRotationPoint;
@@ -475,11 +479,12 @@ function galaxyRotateUniverse(galaxyRotationFactor, galaxyArray){
 		for (var i = 0; i < galaxyArray.length; i++) {
 		galaxyArray[i].rotate(galaxyRotationFactor * universeVelocity, universeRotationPoint);
 	}
+	return(galaxyArray[0].position);
 }
 
-function galaxyRotateCenter(galaxyRotationFactor, galaxyArray, galaxyPosition){
-	for (var i = 0; i < galaxyArray.length; i++) {
-		galaxyArray[i].rotate(galaxyRotationFactor * universeVelocity, galaxyPosition);
+function galaxyRotateCenter(galaxyArray, galaxyRotationFactor, galaxyPosition){
+		for (var i = 0; i < galaxyArray.length; i++) {
+		galaxyArray[i].rotate(galaxyRotationFactor * universeVelocity * 2.5, galaxyPosition);
 	}
 }
 
@@ -530,7 +535,7 @@ async function getPose(){
 
 				snapFlag = false; // after a snap we initialze a new starsign
 
-				let possiblePoints = shuffleArray([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]) //mix up the order of these point IDs so I can later get a random subset from them. this is a nice trick to draw random numbers from a certain set where I want to make sure to not get the same number twice :)
+				let possiblePoints = shuffleArray([5,6,7,8,9,10,11,12,13,14]) //mix up the order of these point IDs so I can later get a random subset from them. this is a nice trick to draw random numbers from a certain set where I want to make sure to not get the same number twice :)
 
 				cleanMotionCapture();
 
@@ -709,16 +714,6 @@ function starSignSnap() {
 	}
 }
 
-//	Function - moves the Saved starsigns around
-function starSignTranslate(rate){
-	for(var i = 0; i < signStarBuffer.length; i++){
-		signStarBuffer[i].translate(rate, 0);
-	}
-	for (let i = 0; i < signStarLines.length; i++) {
-		signStarLines[i].translate(rate, 0);
-	}
-}
-
 //rotates the starsigns around the canvas center
 function starSignRotate(rate){
 	for(var i = 0; i < signStarBuffer.length; i++){
@@ -781,10 +776,10 @@ window.onload = function() {
 	galaxyPosition2 = new Point(paper.view.center.x, paper.view.center.y + 200);
 	galaxyPosition3 = new Point (1600,1200);
 	galaxyPosition4 = new Point (2500,500);
-	galaxyDraw(galaxyPosition1, galaxyArray1, galaxySizeFactor1);
-	galaxyDraw(galaxyPosition2, galaxyArray2, galaxySizeFactor2);
-	galaxyDraw(galaxyPosition3, galaxyArray3, galaxySizeFactor3);
-	galaxyDraw(galaxyPosition4, galaxyArray4, galaxySizeFactor4);
+	galaxyDraw(galaxyPosition1, galaxyArray1, galaxySizeFactor1, galaxyVariance1);
+	galaxyDraw(galaxyPosition2, galaxyArray2, galaxySizeFactor2, galaxyVariance2);
+	galaxyDraw(galaxyPosition3, galaxyArray3, galaxySizeFactor3, galaxyVariance3);
+	galaxyDraw(galaxyPosition4, galaxyArray4, galaxySizeFactor4, galaxyVariance4);
 
 //	Planet Setup
 	//planetsCreate();
@@ -806,10 +801,10 @@ window.onload = function() {
 			getPose();
 			starsRotateUniverse();
 			starSignRotate(0.1);
-			galaxyRotateUniverse(galaxyRotationFactor1, galaxyArray1);
-			galaxyRotateUniverse(galaxyRotationFactor2, galaxyArray2);
-			galaxyRotateUniverse(galaxyRotationFactor3, galaxyArray3);
-			galaxyRotateUniverse(galaxyRotationFactor4, galaxyArray4);
+			galaxyRotateCenter(galaxyArray1, galaxyRotationFactor1, galaxyRotateUniverse(galaxyRotationFactor1, galaxyArray1));
+			galaxyRotateCenter(galaxyArray2, galaxyRotationFactor2, galaxyRotateUniverse(galaxyRotationFactor2, galaxyArray2));
+			galaxyRotateCenter(galaxyArray3, galaxyRotationFactor3, galaxyRotateUniverse(galaxyRotationFactor3, galaxyArray3));
+			galaxyRotateCenter(galaxyArray4, galaxyRotationFactor4, galaxyRotateUniverse(galaxyRotationFactor4, galaxyArray4));
 			//planetsMove();
 			//planetsMove2();
 			//planetsMove3();
