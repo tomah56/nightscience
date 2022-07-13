@@ -507,6 +507,17 @@ window.onload = function() {
 
 	setUpMovement();
 
+	let item = paper.project.importSVG('http://127.0.0.1:5500/resources/42logo.svg',
+		function(foo) {
+			let scaleFactor = 1.3;
+			foo.scale(scaleFactor);
+			foo.position = new paper.Point(
+				viewSizeWidth - foo.bounds.width + 100 * scaleFactor,
+				viewSizeHeight - foo.bounds.height + 70 * scaleFactor)
+		}
+	);
+	console.log(item);
+
 //	Video Setup
     video = document.getElementById('video');
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
