@@ -80,6 +80,7 @@ var galaxySizeFactor3 = 0.58;
 var	galaxyRotationFactor3 = galaxySizeFactor3 * 0.03;
 var	galaxyVariance3 = 45;
 
+//	galaxyFour properties
 var	galaxyArray4 = [];
 var	galaxyPosition4;
 var galaxySizeFactor4 = 0.6;
@@ -114,7 +115,7 @@ let signStarBuffer = [];
 let signStarLines = [];
 let signRotationCenter;
 
-let signStarsCount = 5;
+let signStarsCount = 10;
 let signCount = 5;
 let signLinesCount = signStarsCount * (signStarsCount - 1) / 2;
 let motionTrigger = 20;
@@ -132,8 +133,8 @@ function randomInt(min, max){
 }
 
 function randomColor() {
-	let i = randomInt(0, 4);
-	if (i >= 3)
+	let i = randomInt(0, 3);
+	if (i > 3)
 		return 'white';
 	else if (i == 0)
 		return yellow42;
@@ -543,8 +544,20 @@ async function getPose(){
 				for(let i = 0; i < signStarsCount; i++){ //i want to have 3-7 points
 					bodyPoints.push(possiblePoints[i]) //so I take the first n points from the previously shuffled array
 
-					let s = new Path.Circle(centerPoint(mirrorPoint(poses[0].keypoints[possiblePoints[i]]), signRotationCenter), randomInt(5, 20));
-					s.fillColor = randomColor();
+					let s = new Path.Circle(centerPoint(mirrorPoint(poses[0].keypoints[possiblePoints[i]]), signRotationCenter), randomInt(3, 15));
+					if (possiblePoints[i] == 13 || possiblePoints[i] == 14){
+						s.fillColor = blue42;
+						// 13,14
+					}
+					else if (possiblePoints[i] < 11 && possiblePoints[i] > 6){
+						s.fillColor = yellow42;
+						// 7,8,9,10
+					}
+					else {
+						s.fillColor = pink42;
+						// 5,6,11,12
+					}
+					// s.fillColor = randomColor();
 					signStarts.push( s ); //also safe the star/cicle shapes somewhere so I can move them around later on
 				}
 
