@@ -21,7 +21,7 @@ var universeRotationPoint;
 //																					Variables - Stars
 
 var starsArray = [];
-var starsCount = 1000;
+var starsCount = 650;
 var starsColor = 'white';
 var starsKeyDownCounter = 0;
 
@@ -62,25 +62,25 @@ let planet3;
 //	galaxyOne properties
 var galaxyArray1 = [];
 var galaxyPosition1;
-var galaxySizeFactor1 = 0.15;
-var galaxyRotationFactor1 = 0.006;
+var galaxySizeFactor1 = 0.9;
+var galaxyRotationFactor1 = galaxySizeFactor1 * 0.01;
 
 //	galaxyTwo properties
 var galaxyArray2 = [];
 var galaxyPosition2;
-var galaxySizeFactor2 = 0.23;
-var galaxyRotationFactor2 = 0.005;
+var galaxySizeFactor2 = 0.55;
+var galaxyRotationFactor2 = galaxySizeFactor2 * 0.01;
 
 //	galaxyThree properties
 var	galaxyArray3 = [];
 var	galaxyPosition3;
-var galaxySizeFactor3 = 0.27;
-var	galaxyRotationFactor3 = 0.006;
+var galaxySizeFactor3 = 0.45;
+var	galaxyRotationFactor3 = galaxySizeFactor3 * 0.01;
 
 var	galaxyArray4 = [];
 var	galaxyPosition4;
-var galaxySizeFactor4 = 0.28;
-var	galaxyRotationFactor4 = 0.007;
+var galaxySizeFactor4 = 0.6;
+var	galaxyRotationFactor4 = galaxySizeFactor4 * 0.01;
 
 //																			Variables - Motion Tracking
 
@@ -436,7 +436,7 @@ function galaxyRandomizeCircle(position, galaxyArray, galaxySizeFactor){
 		center: new Point(
 		position.x + randomInt(-5, 5),
 		position.y + randomInt(-5, 5)),
-		radius: randomInt(1, randomInt(1.5, 12) * galaxySizeFactor)});
+		radius: randomInt(0.5, 3) * galaxySizeFactor});
 	var galaxyCircleChance = randomInt(1, 3);
 	if (galaxyCircleChance == 1)
 		galaxyRandomCircle.fillColor = blue42;
@@ -450,13 +450,13 @@ function galaxyRandomizeCircle(position, galaxyArray, galaxySizeFactor){
 //	FUNCTION - draw a spiral with center position
 function galaxyDrawSpiral(position, offset, width, height, galaxyArray, galaxySizeFactor){
 
-	for (var i = 0; i < 105; i++) {
+	for (var i = 0; i < 100 + (randomInt(1, 50) * galaxySizeFactor); i++) {
 		var np = new Point();
 		var galaxySpiralRadius = (i + Math.random() / 0.5) * Math.PI / 24 + offset * Math.PI;
-		np.x = position.x + Math.sin(galaxySpiralRadius) * width * randomInt(1.0, 2.0) * galaxySizeFactor;
-		np.y = position.y + Math.cos(galaxySpiralRadius) * height * randomInt(1.0, 2.0) * galaxySizeFactor;
-		np.x = (np.x - position.x) * i * i / 30 + position.x * galaxySizeFactor;
-		np.y = (np.y - position.y) * i * i / 30 + position.y * galaxySizeFactor;
+		np.x = position.x + Math.sin(galaxySpiralRadius) * width  * galaxySizeFactor / 2;
+		np.y = position.y + Math.cos(galaxySpiralRadius) * height  * galaxySizeFactor / 2;
+		np.x = (np.x - position.x) * i * i / 30 + position.x + (randomInt(1, 20) * galaxySizeFactor);
+		np.y = (np.y - position.y) * i * i / 30 + position.y + (randomInt(1, 20) * galaxySizeFactor);
 		galaxyRandomizeCircle(np, galaxyArray, galaxySizeFactor);
 		galaxyRandomizeCircle(np, galaxyArray, galaxySizeFactor);
 		galaxyRandomizeCircle(np, galaxyArray, galaxySizeFactor);
@@ -777,10 +777,10 @@ window.onload = function() {
 	assignRateRandom(starsArray);
 
 //	Galaxy Setup
-	galaxyPosition1 = new Point(100,100);
-	galaxyPosition2 = new Point(2000,4000);
-	galaxyPosition3 = new Point (7000,0);
-	galaxyPosition4 = new Point (9000,4000);
+	galaxyPosition1 = new Point(200,200);
+	galaxyPosition2 = new Point(200,900);
+	galaxyPosition3 = new Point (1600,1200);
+	galaxyPosition4 = new Point (2500,500);
 	galaxyDraw(galaxyPosition1, galaxyArray1, galaxySizeFactor1);
 	galaxyDraw(galaxyPosition2, galaxyArray2, galaxySizeFactor2);
 	galaxyDraw(galaxyPosition3, galaxyArray3, galaxySizeFactor3);
