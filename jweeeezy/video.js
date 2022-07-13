@@ -514,6 +514,14 @@ function cleanMotionCapture() {
 					connectionLines = [];
 }
 
+function findLastPerson(poses) {
+	for (let i = 0; i < poses.length; i++) {
+		if( lastID == poses[i].id)
+			return i;
+	}
+	return 0;
+}
+
 async function getPose(){
 	if(net){
 		const poses = await net.estimatePoses(video, {flipHorizontal: true});
@@ -524,14 +532,15 @@ async function getPose(){
 			cleanMotionCapture();
 			return;
 		}
-
+		// console.log("N Personen: " + poses.length);
+		// for (let i = 0; i < poses.length; i++) {
+		// 	console.log("ID:" + poses[i].id);
+		// }
 		if(poses[0]){ //is there a person?
 
-			nosePoint.position = poses[0].keypoints.find(obj => {
-				return obj.name == "nose"
-			})
-			if(poses[0].id != lastID || snapFlag ){ //we have a new person here because we have not seen this persons ID yet
-				lastID = poses[0].id //let's remember the current id/person
+			let index = findLastPerson(poses);
+			if(poses[index].id != lastID || snapFlag ){ //we have a new person here because we have not seen this persons ID yet
+				lastID = poses[index].id //let's remember the current id/person
 
 				snapFlag = false; // after a snap we initialze a new starsign
 
@@ -543,7 +552,7 @@ async function getPose(){
 				for(let i = 0; i < signStarsCount; i++){ //i want to have 3-7 points
 					bodyPoints.push(possiblePoints[i]) //so I take the first n points from the previously shuffled array
 
-					let s = new Path.Circle(centerPoint(mirrorPoint(poses[0].keypoints[possiblePoints[i]]), signRotationCenter), randomInt(5, 20));
+					let s = new Path.Circle(centerPoint(mirrorPoint(poses[index].keypoints[possiblePoints[i]]), signRotationCenter), randomInt(5, 20));
 					s.fillColor = randomColor();
 					signStarts.push( s ); //also safe the star/cicle shapes somewhere so I can move them around later on
 				}
@@ -574,7 +583,7 @@ async function getPose(){
 					//with the loop I now go through all these saved IDs and set them as the position of the matching star/circle
 
 					let p = new Point();
-					p = centerPoint(mirrorPoint(poses[0].keypoints[bodyPoints[i]]), signRotationCenter);
+					p = centerPoint(mirrorPoint(poses[index].keypoints[bodyPoints[i]]), signRotationCenter);
 					movement += Math.abs(p.x - signStarts[i].position.x) + Math.abs(p.y - signStarts[i].position.y);
 					p.x = (p.x + signStarts[i].position.x) / 2;
 					p.y = (p.y + signStarts[i].position.y) / 2;
@@ -758,15 +767,15 @@ window.onload = function() {
 	setUpMovement();
 
 //	Logo Setup
-let item = paper.project.importSVG('http://127.0.0.1:5500/nightscience/resources/42logo.svg',
-function(foo) {
-	let scaleFactor = 1.3;
-	foo.scale(scaleFactor);
-	foo.position = new paper.Point(
-		viewSizeWidth - foo.bounds.width + 100 * scaleFactor,
-		viewSizeHeight - foo.bounds.height + 70 * scaleFactor)
-}
-);
+	let item = paper.project.importSVG('http://127.0.0.1:5500/nightscience/resources/42logo.svg',
+		function(foo) {
+			let scaleFactor = 1.3;
+			foo.scale(scaleFactor);
+			foo.position = new paper.Point(
+				viewSizeWidth - foo.bounds.width + 100 * scaleFactor,
+				viewSizeHeight - foo.bounds.height + 70 * scaleFactor)
+		}
+	);
 
 //	Video Setup
     video = document.getElementById('video');

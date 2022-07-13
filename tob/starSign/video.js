@@ -52,7 +52,7 @@ async function getPose(){
         if(net){
             const poses = await net.estimatePoses(video, {flipHorizontal: true});
 
-
+			console.log(poses.lenght);
             if(poses[0]){ //is there a person?
 				
 				if(poses[0].id != lastID){ //we have a new person here because we have not seen this persons ID yet

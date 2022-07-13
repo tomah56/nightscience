@@ -295,7 +295,6 @@ function rotateStarSignCenter(deg) {
 async function getPose(){
 	if(net){
 		const poses = await net.estimatePoses(video, {flipHorizontal: true});
-
 		rotateStarSignCenter(-0.1)
 
 		if (fullCircle >= 5)
@@ -311,6 +310,7 @@ async function getPose(){
 			connectionLines = [];
 			return ;
 		}
+		console.log(poses.length);
 		if(poses[0]){ //is there a person?
 			
 			if(poses[0].id != lastID || snapFlag ){ //we have a new person here because we have not seen this persons ID yet
