@@ -15,13 +15,13 @@ let blue42 = '#00babc';
 let pink42 = '#d101bf';
 let yellow42 = '#f1ca37';
 
-var universeVelocity = 2;
+var universeVelocity = 3;
 var universeRotationPoint;
 
 //																					Variables - Stars
 
 var starsArray = [];
-var starsCount = 500;
+var starsCount = 1000;
 var starsColor = 'white';
 var starsKeyDownCounter = 0;
 
@@ -62,14 +62,25 @@ let planet3;
 //	galaxyOne properties
 var galaxyArray1 = [];
 var galaxyPosition1;
-var galaxySizeFactor1 = 0.5;
+var galaxySizeFactor1 = 0.15;
 var galaxyRotationFactor1 = 0.006;
 
 //	galaxyTwo properties
 var galaxyArray2 = [];
 var galaxyPosition2;
-var galaxySizeFactor2 = 0.3;
+var galaxySizeFactor2 = 0.23;
 var galaxyRotationFactor2 = 0.005;
+
+//	galaxyThree properties
+var	galaxyArray3 = [];
+var	galaxyPosition3;
+var galaxySizeFactor3 = 0.27;
+var	galaxyRotationFactor3 = 0.006;
+
+var	galaxyArray4 = [];
+var	galaxyPosition4;
+var galaxySizeFactor4 = 0.28;
+var	galaxyRotationFactor4 = 0.007;
 
 //																			Variables - Motion Tracking
 
@@ -151,7 +162,7 @@ function starsGenerate(){
 	for(var i = 0; i <= starsCount; i++){
 		var starSingle = new Path.Circle({
 			center: new Point(randomCoordinate(0, viewSizeWidth), randomCoordinate(0, viewSizeHeight)),
-			radius: randomInt(0.1, 4)});
+			radius: randomInt(0.01, 2)});
     	starSingle.fillColor = starsColor;
 		starsOrbit = new Path.Ellipse({
 			position: paper.view.center,
@@ -181,12 +192,12 @@ function starsRotateUniverse(){
 }
 
 function starsChangeDirectionOnKeyDown(){
-	if(starsKeyDownCounter < 50 && event.key == 'd'){
+	if(starsKeyDownCounter < 75 && event.key == 'd'){
 		universeVelocity += 1;
 		assignRateRandom(starsArray);
 		starsKeyDownCounter++;
 	}
-	if(starsKeyDownCounter > -50 && event.key == 'a'){
+	if(starsKeyDownCounter > -75 && event.key == 'a'){
 		universeVelocity -= 1;
 		assignRateRandom(starsArray);
 		starsKeyDownCounter--;
@@ -425,7 +436,7 @@ function galaxyRandomizeCircle(position, galaxyArray, galaxySizeFactor){
 		center: new Point(
 		position.x + randomInt(-5, 5),
 		position.y + randomInt(-5, 5)),
-		radius: randomInt(1, 5 * galaxySizeFactor)});
+		radius: randomInt(1, randomInt(1.5, 12) * galaxySizeFactor)});
 	var galaxyCircleChance = randomInt(1, 3);
 	if (galaxyCircleChance == 1)
 		galaxyRandomCircle.fillColor = blue42;
@@ -442,8 +453,8 @@ function galaxyDrawSpiral(position, offset, width, height, galaxyArray, galaxySi
 	for (var i = 0; i < 105; i++) {
 		var np = new Point();
 		var galaxySpiralRadius = (i + Math.random() / 0.5) * Math.PI / 24 + offset * Math.PI;
-		np.x = position.x + Math.sin(galaxySpiralRadius) * width * galaxySizeFactor;
-		np.y = position.y + Math.cos(galaxySpiralRadius) * height * galaxySizeFactor;
+		np.x = position.x + Math.sin(galaxySpiralRadius) * width * randomInt(1.0, 2.0) * galaxySizeFactor;
+		np.y = position.y + Math.cos(galaxySpiralRadius) * height * randomInt(1.0, 2.0) * galaxySizeFactor;
 		np.x = (np.x - position.x) * i * i / 30 + position.x * galaxySizeFactor;
 		np.y = (np.y - position.y) * i * i / 30 + position.y * galaxySizeFactor;
 		galaxyRandomizeCircle(np, galaxyArray, galaxySizeFactor);
@@ -669,7 +680,6 @@ function starSignRollingCleanup() {
 }
 
 function resetStarSigns() {
-	console.log("lol");
 	if (event.key == 'q') {
 		cleanStarSigns();
 		fullCircle = 0;
@@ -767,15 +777,17 @@ window.onload = function() {
 	assignRateRandom(starsArray);
 
 //	Galaxy Setup
-	galaxyPosition1 = new Point(400, 400);
-	console.log("GalaxyPosition1:", galaxyPosition1);
-	galaxyPosition2 = new Point(8000, 4000);
-	console.log("GalaxyPosition2:", galaxyPosition2);
+	galaxyPosition1 = new Point(100,100);
+	galaxyPosition2 = new Point(2000,4000);
+	galaxyPosition3 = new Point (7000,0);
+	galaxyPosition4 = new Point (9000,4000);
 	galaxyDraw(galaxyPosition1, galaxyArray1, galaxySizeFactor1);
 	galaxyDraw(galaxyPosition2, galaxyArray2, galaxySizeFactor2);
+	galaxyDraw(galaxyPosition3, galaxyArray3, galaxySizeFactor3);
+	galaxyDraw(galaxyPosition4, galaxyArray4, galaxySizeFactor4);
 
 //	Planet Setup
-	planetsCreate();
+	//planetsCreate();
 
     video.onloadeddata = function() {
         setupNet();
@@ -791,18 +803,18 @@ window.onload = function() {
 //																					Event - each Frame
 
 		view.onFrame = function(event){
-			if (event.count % 7 == 0)
-				getPose();
+			getPose();
 			starsRotateUniverse();
 			starSignRotate(0.1);
 			galaxyRotateUniverse(galaxyRotationFactor1, galaxyArray1);
 			galaxyRotateUniverse(galaxyRotationFactor2, galaxyArray2);
-			planetsMove();
-			planetsMove2();
-			planetsMove3();
-			sunThemidle.position = new Point( planetStartX,  planetStartY);
-			planetsMoveOnNosePoint();
-
+			galaxyRotateUniverse(galaxyRotationFactor3, galaxyArray3);
+			galaxyRotateUniverse(galaxyRotationFactor4, galaxyArray4);
+			//planetsMove();
+			//planetsMove2();
+			//planetsMove3();
+			//sunThemidle.position = new Point( planetStartX,  planetStartY);
+			//planetsMoveOnNosePoint();
 		}
 
     }
