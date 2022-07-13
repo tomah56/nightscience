@@ -15,7 +15,7 @@ let blue42 = '#00babc';
 let pink42 = '#d101bf';
 let yellow42 = '#f1ca37';
 
-var universeVelocity = 3;
+var universeVelocity = -4;
 var universeRotationPoint;
 
 //																					Variables - Stars
@@ -63,24 +63,24 @@ let planet3;
 var galaxyArray1 = [];
 var galaxyPosition1;
 var galaxySizeFactor1 = 0.9;
-var galaxyRotationFactor1 = galaxySizeFactor1 * 0.01;
+var galaxyRotationFactor1 = galaxySizeFactor1 * 0.015;
 
 //	galaxyTwo properties
 var galaxyArray2 = [];
 var galaxyPosition2;
-var galaxySizeFactor2 = 0.55;
-var galaxyRotationFactor2 = galaxySizeFactor2 * 0.01;
+var galaxySizeFactor2 = 0.3;
+var galaxyRotationFactor2 = galaxySizeFactor2 * 0.04;
 
 //	galaxyThree properties
 var	galaxyArray3 = [];
 var	galaxyPosition3;
-var galaxySizeFactor3 = 0.45;
-var	galaxyRotationFactor3 = galaxySizeFactor3 * 0.01;
+var galaxySizeFactor3 = 0.58;
+var	galaxyRotationFactor3 = galaxySizeFactor3 * 0.015;
 
 var	galaxyArray4 = [];
 var	galaxyPosition4;
 var galaxySizeFactor4 = 0.6;
-var	galaxyRotationFactor4 = galaxySizeFactor4 * 0.01;
+var	galaxyRotationFactor4 = galaxySizeFactor4 * 0.015;
 
 //																			Variables - Motion Tracking
 
@@ -778,7 +778,7 @@ window.onload = function() {
 
 //	Galaxy Setup
 	galaxyPosition1 = new Point(200,200);
-	galaxyPosition2 = new Point(200,900);
+	galaxyPosition2 = new Point(paper.view.center.x, paper.view.center.y + 200);
 	galaxyPosition3 = new Point (1600,1200);
 	galaxyPosition4 = new Point (2500,500);
 	galaxyDraw(galaxyPosition1, galaxyArray1, galaxySizeFactor1);
