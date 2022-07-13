@@ -3,6 +3,8 @@
 NEXT SETUP
 
 	//	Setup at 42HN-Security Desk (MAC, TV, Webcam) - done
+			//	User: Demo
+			//	PW: demo
 	//	Make illustrative posters?
 
 FEATURES SO FAR
