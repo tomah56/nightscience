@@ -118,7 +118,7 @@ let signRotationCenter;
 let signStarsCount = 10;
 let signCount = 5;
 let signLinesCount = signStarsCount * (signStarsCount - 1) / 2;
-let motionTrigger = 20;
+let motionTrigger = 40;
 
 let fullCircle = 0;
 
@@ -740,9 +740,24 @@ function starSignSnap() {
 function starSignRotate(rate){
 	for(var i = 0; i < signStarBuffer.length; i++){
 		signStarBuffer[i].rotate(rate, paper.view.center);
+		signStarBuffer[i].translate(
+				new Point((signStarBuffer[i].position.x - universeRotationPoint.x) / -50,
+				(signStarBuffer[i].position.y - universeRotationPoint.y) / -50)
+		);
+		if(Math.abs(signStarBuffer[i].position.x - universeRotationPoint.x) < 30) {
+			signStarBuffer[i].remove();
+			signStarBuffer.splice(i, 1);
+			i--;
+		}
 	}
 	for (let i = 0; i < signStarLines.length; i++) {
 		signStarLines[i].rotate(rate, paper.view.center);
+
+		signStarLines[i].translate(
+			new Point((signStarLines[i].position.x - universeRotationPoint.x) / -50,
+			(signStarLines[i].position.y - universeRotationPoint.y) / -50)
+			
+	);
 	}
 }
 
@@ -780,7 +795,7 @@ window.onload = function() {
 	setUpMovement();
 
 //	Logo Setup
-	let item = paper.project.importSVG('http://127.0.0.1:5500/nightscience/resources/42logo.svg',
+	let item = paper.project.importSVG('http://127.0.0.1:5500/resources/42logo.svg',
 		function(foo) {
 			let scaleFactor = 1.3;
 			foo.scale(scaleFactor);
