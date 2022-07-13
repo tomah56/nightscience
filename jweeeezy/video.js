@@ -63,15 +63,15 @@ let planet3;
 var galaxyArray1 = [];
 var galaxyPosition1;
 var galaxySizeFactor1 = 0.9;
-var galaxyRotationFactor1 = galaxySizeFactor1 * 0.015;
+var galaxyRotationFactor1 = galaxySizeFactor1 * 0.02;
 var	galaxyVariance1 = 16;
 
 //	galaxyTwo properties
 var galaxyArray2 = [];
 var galaxyPosition2;
-var galaxySizeFactor2 = 0.3;
-var galaxyRotationFactor2 = galaxySizeFactor2 * 0.015;
-var	galaxyVariance2 = 80;
+var galaxySizeFactor2 = 0.35;
+var galaxyRotationFactor2 = galaxySizeFactor2 * 0.01;
+var	galaxyVariance2 = 300;
 
 //	galaxyThree properties
 var	galaxyArray3 = [];
@@ -757,6 +757,17 @@ window.onload = function() {
 
 	setUpMovement();
 
+//	Logo Setup
+let item = paper.project.importSVG('http://127.0.0.1:5500/nightscience/resources/42logo.svg',
+function(foo) {
+	let scaleFactor = 1.3;
+	foo.scale(scaleFactor);
+	foo.position = new paper.Point(
+		viewSizeWidth - foo.bounds.width + 100 * scaleFactor,
+		viewSizeHeight - foo.bounds.height + 70 * scaleFactor)
+}
+);
+
 //	Video Setup
     video = document.getElementById('video');
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -773,7 +784,7 @@ window.onload = function() {
 
 //	Galaxy Setup
 	galaxyPosition1 = new Point(200,200);
-	galaxyPosition2 = new Point(paper.view.center.x, paper.view.center.y + 200);
+	galaxyPosition2 = new Point(paper.view.center.x, paper.view.center.y);
 	galaxyPosition3 = new Point (1600,1200);
 	galaxyPosition4 = new Point (2500,500);
 	galaxyDraw(galaxyPosition1, galaxyArray1, galaxySizeFactor1, galaxyVariance1);
