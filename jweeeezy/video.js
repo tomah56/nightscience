@@ -63,21 +63,21 @@ let planet3;
 var galaxyArray1 = [];
 var galaxyPosition1;
 var galaxySizeFactor1 = 0.9;
-var galaxyRotationFactor1 = galaxySizeFactor1 * 0.02;
+var galaxyRotationFactor1 = galaxySizeFactor1 * 0.01;
 var	galaxyVariance1 = 16;
 
 //	galaxyTwo properties
 var galaxyArray2 = [];
 var galaxyPosition2;
 var galaxySizeFactor2 = 0.35;
-var galaxyRotationFactor2 = galaxySizeFactor2 * 0.01;
+var galaxyRotationFactor2 = galaxySizeFactor2 * 0.02;
 var	galaxyVariance2 = 300;
 
 //	galaxyThree properties
 var	galaxyArray3 = [];
 var	galaxyPosition3;
 var galaxySizeFactor3 = 0.58;
-var	galaxyRotationFactor3 = galaxySizeFactor3 * 0.02;
+var	galaxyRotationFactor3 = galaxySizeFactor3 * 0.03;
 var	galaxyVariance3 = 45;
 
 var	galaxyArray4 = [];
