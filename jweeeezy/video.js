@@ -115,13 +115,16 @@ let signStarBuffer = [];
 let signStarLines = [];
 let signRotationCenter;
 
-let signStarsCount = 10;
+let signStarsCount = 9;
 let signCount = 5;
 let signLinesCount = signStarsCount * (signStarsCount - 1) / 2;
 let motionTrigger = 40;
 
 let fullCircle = 0;
 
+let blackholeRate = -300;
+
+let lastSnapTime;
 //												FUNCTIONS
 
 function randomCoordinate(min, max) {
@@ -529,10 +532,12 @@ async function getPose(){
 
 		starSignRotateCenter(-0.1);
 
-		if (fullCircle >= signCount){
-			cleanMotionCapture();
-			return;
-		}
+		if (performance.now() <= lastSnapTime + 2000)
+			return ;
+		// if (fullCircle >= signCount){
+		// 	cleanMotionCapture();
+		// 	return;
+		// }
 		// console.log("N Personen: " + poses.length);
 		// for (let i = 0; i < poses.length; i++) {
 		// 	console.log("ID:" + poses[i].id);
@@ -545,8 +550,9 @@ async function getPose(){
 
 				snapFlag = false; // after a snap we initialze a new starsign
 
-				let possiblePoints = shuffleArray([5,6,7,8,9,10,11,12,13,14]) //mix up the order of these point IDs so I can later get a random subset from them. this is a nice trick to draw random numbers from a certain set where I want to make sure to not get the same number twice :)
+				// let possiblePoints = shuffleArray([5,6,7,8,9,10,11,12,13,14]) //mix up the order of these point IDs so I can later get a random subset from them. this is a nice trick to draw random numbers from a certain set where I want to make sure to not get the same number twice :)
 
+				let possiblePoints = [0, 7, 8, 9, 10, 13, 14, 12, 5]
 				cleanMotionCapture();
 
 				//create new stars and lines for the new person
@@ -714,7 +720,8 @@ function resetStarSigns() {
 }
 
 function starSignSnap() {
-	fullCircle += 1;
+	//fullCircle += 1;
+	lastSnapTime = performance.now();
 	for(var i = 0; i < signStarts.length; i++){
 		var starSingle = new Path.Circle({
 			center: new Point (signStarts[i].position.x, signStarts[i].position.y),
@@ -734,17 +741,21 @@ function starSignSnap() {
 		newLine.insertBelow(signStarBuffer[0]);
 		signStarLines.push(newLine);
 	}
+	cleanMotionCapture();
 }
+
+
 
 //rotates the starsigns around the canvas center
 function starSignRotate(rate){
 	for(var i = 0; i < signStarBuffer.length; i++){
 		signStarBuffer[i].rotate(rate, paper.view.center);
 		signStarBuffer[i].translate(
-				new Point((signStarBuffer[i].position.x - universeRotationPoint.x) / -50,
-				(signStarBuffer[i].position.y - universeRotationPoint.y) / -50)
+				new Point((signStarBuffer[i].position.x - universeRotationPoint.x) / blackholeRate,
+				(signStarBuffer[i].position.y - universeRotationPoint.y) / blackholeRate)
 		);
-		if(Math.abs(signStarBuffer[i].position.x - universeRotationPoint.x) < 30) {
+		if(Math.pow((signStarBuffer[i].position.x - universeRotationPoint.x),2) +
+			Math.pow((signStarBuffer[i].position.y - universeRotationPoint.y),2) < 900) {
 			signStarBuffer[i].remove();
 			signStarBuffer.splice(i, 1);
 			i--;
@@ -753,11 +764,25 @@ function starSignRotate(rate){
 	for (let i = 0; i < signStarLines.length; i++) {
 		signStarLines[i].rotate(rate, paper.view.center);
 
-		signStarLines[i].translate(
-			new Point((signStarLines[i].position.x - universeRotationPoint.x) / -50,
-			(signStarLines[i].position.y - universeRotationPoint.y) / -50)
-			
-	);
+
+		signStarLines[i].firstSegment.point = new Point(
+			signStarLines[i].firstSegment.point.x + ((universeRotationPoint.x - signStarLines[i].firstSegment.point.x) / 300),
+			signStarLines[i].firstSegment.point.y + ((universeRotationPoint.y - signStarLines[i].firstSegment.point.y) / 300)
+		)
+		signStarLines[i].lastSegment.point = new Point(
+			signStarLines[i].lastSegment.point.x + ((universeRotationPoint.x - signStarLines[i].lastSegment.point.x)  / 300),
+			signStarLines[i].lastSegment.point.y + ((universeRotationPoint.y - signStarLines[i].lastSegment.point.y)  / 300)
+		)
+
+
+		if ((Math.pow((signStarLines[i].firstSegment.point.x - universeRotationPoint.x),2) +
+			Math.pow((signStarLines[i].firstSegment.point.y - universeRotationPoint.y),2) < 900) ||
+			(Math.pow((signStarLines[i].lastSegment.point.x - universeRotationPoint.x),2) +
+			Math.pow((signStarLines[i].lastSegment.point.y - universeRotationPoint.y),2) < 900) ){
+			signStarLines[i].remove();
+			signStarLines.splice(i, 1);
+			i--;
+		}
 	}
 }
 
@@ -831,6 +856,12 @@ window.onload = function() {
 
 //	Planet Setup
 	//planetsCreate();
+
+	let blackhole = new Path.Circle({
+		center: universeRotationPoint,
+		radius: 30
+	});
+	blackhole.fillColor = 'black';
 
     video.onloadeddata = function() {
         setupNet();
